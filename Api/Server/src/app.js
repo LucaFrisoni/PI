@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
 const logger = require("morgan");
+const routes = require ("./routes/index")
+
+
 //Siempre usarlo como Primer MiddleWare
 app.use(express.json()); // Para poder recibir solicitudes Http en formato Json y poder convertirlo a js
 
@@ -17,6 +20,9 @@ app.use((req, res, next) => {
   
   app.use(logger("dev")); //Middleware para que apararezca los métodos que se van usando  
   
+  
+  app.use("/",routes)
+
   app.get("/",(req,res)=>{
     res.status(200).json({message: "Levantando el server del Pi", app: "Luca si podes pa"})
 })
