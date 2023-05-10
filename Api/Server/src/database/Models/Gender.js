@@ -7,8 +7,7 @@ module.exports = (sequelize) => {
     "Genders",
     {
       id: {
-        type: DataTypes.UUID, 
-        allowNull: false,
+        type: DataTypes.INTEGER, 
         primaryKey: true,
        
       },

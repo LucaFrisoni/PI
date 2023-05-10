@@ -20,8 +20,8 @@ GenderModel(sequelize);
 
   //Relaciono los Models => Relacion Muchos a Muchos
 const {Videogames,Genders} = sequelize.models
-Videogames.belongsToMany(Genders,{through:"videogames_genders"})
-Genders.belongsToMany(Videogames,{through:"videogames_genders"})
+Videogames.belongsToMany(Genders,{through:"16horasDeMiVida"})
+Genders.belongsToMany(Videogames,{through:"16horasDeMiVida"})
 
 module.exports={
     ...sequelize.models,

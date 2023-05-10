@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-
+const { v4: uuidv4 } = require('uuid');
 //{ timestamps: false } para que no aparezca en la db la hora y fecha cuando fue modificada
 
 module.exports = (sequelize) => {
@@ -7,10 +7,10 @@ module.exports = (sequelize) => {
     "Videogames",
     {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID, 
         allowNull: false,
         primaryKey: true,
-        autoincrement: true,
+       
       },
       name: {
         type: DataTypes.STRING(45),
@@ -22,22 +22,23 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
       platforms: {
-        type: DataTypes.STRING,
+        type:  DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
       },
       image: {
-        type: DataTypes.BLOB,
+        type: DataTypes.STRING,
         allowNull: false,
       },
-      date: {
+      released: {
         type: DataTypes.DATE,
         allowNull: false,
         comment: "fecha de publicacion",
       },
       rating: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.NUMERIC(4,2), // maximo de 4 digitos, 2 son decimales 
         allowNull: false,
-      },
+      }
+      
     },
     { timestamps: false }
   );

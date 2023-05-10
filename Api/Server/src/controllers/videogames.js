@@ -1,21 +1,22 @@
 const axios = require("axios");
 require("dotenv").config();
-const{Videogames,Gender} = require("../database/Db_connection")
-
-
-
+const { Videogames, Genders } = require("../database/Db_connection");
+const { v4: uuidv4 } = require("uuid");
+const { Op } = require("sequelize");
 
 const API_KEY = process.env.API_KEY;
 const URL = "https://api.rawg.io/api/games";
 
-
-
-
-
-function getAllVideoGames(req, res) {
+async function getAllVideoGames(req, res) {
   const { page } = req.query;
 
   try {
+    const infoGamesDB = await Videogames.findAll({
+      include: [
+        { model: Genders, attributes: ["name"], through: { attributes: [] } },
+      ],
+    });
+
     if (!page) {
       axios.get(`${URL}?key=${API_KEY}`).then(({ data }) => {
         if (data) {
@@ -29,10 +30,11 @@ function getAllVideoGames(req, res) {
               image: game.background_image,
               released: game.released,
               rating: game.rating,
-              genres:game.genres,
+              genres: game.genres,
             };
           });
-          res.status(200).json(infogames);
+          const concatenacion = infoGamesDB.concat(infogames);
+          res.status(200).json(concatenacion);
         } else {
           res.status(400).json({ message: "loading fail" });
         }
@@ -53,71 +55,85 @@ function getAllVideoGames(req, res) {
   }
 }
 
-function getVideoGamesById(req, res) {
+async function getVideoGamesById(req, res) {
   const { idVideogame } = req.params;
   try {
-    axios.get(`${URL}/${idVideogame}?key=${API_KEY}`).then(({ data }) => {
-      if (data) {
-        res.status(200).json(data);
-      } else {
-        res.status(400).json({ message: "Videogame could not be obtained" });
-      }
-    });
+    if (idVideogame.length > 7) {
+      const videoGamesDB = await Videogames.findByPk(idVideogame, {
+        include: [
+          { model: Genders, attributes: ["name"], through: { attributes: [] } },
+        ],
+      });
+      res.status(200).json(videoGamesDB);
+    } else {
+      axios.get(`${URL}/${idVideogame}?key=${API_KEY}`).then(({ data }) => {
+        if (data) {
+          res.status(200).json(data);
+        } else {
+          res.status(400).json({ message: "Videogame could not be obtained" });
+        }
+      });
+    }
   } catch (error) {
     res.status(500).json({ message: error });
   }
 }
 
 function getVideoGamesByName(req, res) {
-    const { search } = req.query;
-  
-    if (!search) {
-      return res.status(400).json({ message: "You must include search term" });
-    }
-  
-    try {
-        console.log('Realizando petición a la API...');
-        axios.get(`${URL}?search=${search}&key=${API_KEY}`).then(({ data }) => {
-        if (data && data.results) {
-            
-          res.status(200).json(data.results);
-        } else {
-          res.status(400).json({ message: "Videogame could not be obtained" });
-        }
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Search fail" });
-    }
+  const { search } = req.query;
+
+  if (!search) {
+    return res.status(400).json({ message: "You must include search term" });
   }
 
-async function postVideoGame (req,res) {
-const {name,description,platforms,image,released,rating,genres} = req.body
-
-try {
-    const [game,created]= await Videogames.findOrCreate({
-        where:{name},
-        defaults:{
-            name,
-            description,
-            platforms,
-            image,
-            released,
-            rating,
-            genres,
-        }
-    })
-    if (created) {
-        res.status(200).json({message:"Game created"})
-    } else {
-        res.status(200).json({message:"Game already"})
-    }
-} catch (error) {
-    res.status(500).json({message:error})
+  try {
+    console.log("Realizando petición a la API...");
+    axios.get(`${URL}?search=${search}&key=${API_KEY}`).then(({ data }) => {
+      if (data && data.results) {
+        res.status(200).json(data.results);
+      } else {
+        res.status(400).json({ message: "Videogame could not be obtained" });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Search fail" });
+  }
 }
 
-
+// Podria haber creado otra relacion en vez de esta funcion
+function HandlePlatformNames(platforms) {
+  return platforms.map((platform) => platform.platform.name);
 }
+
+const postVideoGame = async (req, res) => {
+  const { name, description, platforms, released, rating, genres, image } =
+    req.body;
+  try {
+    const newVideogame = await Videogames.create({
+      id: uuidv4(),
+      name,
+      description,
+      released,
+      rating,
+      image,
+      platforms: HandlePlatformNames(platforms),
+    });
+    const genreNames = await Genders.findAll({
+      where: {
+        id: {
+          [Op.in]: genres,
+        },
+      },
+    });
+    await newVideogame.addGenders(genreNames)
+    res.status(200).json({
+      message: "Videogame created successfully",
+    });
+  } catch (error) {
+    res.status(404).send({ message: error.message });
+  }
+};
 
 module.exports = {
   getAllVideoGames,
@@ -125,3 +141,26 @@ module.exports = {
   getVideoGamesByName,
   postVideoGame,
 };
+// const [game, created] = await Videogames.findOrCreate({
+//   where: { name },
+//   defaults: {
+//     id: uuidv4(),
+//     name,
+//     description,
+//     platforms: HandlePlatformNames(platforms),
+//     image,
+//     released,
+//     rating,
+//   },
+// });
+// const genderNames = Genders.findAll({ where: { id: { [Op.in]: genres } } })[
+//   ("action", "adventure")
+// ];
+// if (created) {
+//   game.addGenders(genderNames);
+
+//   // await game.addGenders(genresArray); // la relaciones de muchos a muchos
+//   res.status(200).json({ message: "Game created" });
+// } else {
+//   res.status(200).json({ message: "Game already exist" });
+//}
