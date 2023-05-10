@@ -78,7 +78,7 @@ async function getVideoGamesById(req, res) {
     res.status(500).json({ message: error });
   }
 }
-
+// falta hacer que busque en la base de datos  y usar include para los genders
 function getVideoGamesByName(req, res) {
   const { search } = req.query;
 
