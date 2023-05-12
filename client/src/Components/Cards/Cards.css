@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: row;
+}
+h1 {
+  text-align: center;
+  margin-bottom: 20px; /* agrega un margen inferior para separar los elementos */
+}
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+.button-container button {
+  margin: 10px;
+}
+.container-selects {
+  display: flex;
+  justify-content: center;
+}
+.container-selects select{
+  width: 150px;
+}
+.container-selects select option{
+  color: black;
+}

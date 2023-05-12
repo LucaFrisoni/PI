@@ -1,0 +1,13 @@
+
+  .card{
+    width: 300px;
+    background-color: black;
+    color: aliceblue;
+    margin: 10px;
+    padding: 10px;
+  }
+  
+  .card img {
+    max-width: 100%;
+    height: auto;
+  }

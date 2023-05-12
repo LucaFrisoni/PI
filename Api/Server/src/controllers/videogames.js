@@ -20,17 +20,21 @@ async function getAllVideoGames(req, res) {
     if (!page) {
       axios.get(`${URL}?key=${API_KEY}`).then(({ data }) => {
         if (data) {
+          function HandlePlatformNames(platforms) {
+            return platforms.map((platform) => platform.platform.name);
+          }
+
           const infogames = data.results.map((game) => {
             return {
               id: game.id,
               name: game.name,
               description:
                 "La descripcion del juego se encuentra al buscar por params",
-              platforms: game.platforms,
+              platforms: HandlePlatformNames(game.platforms),
               image: game.background_image,
               released: game.released,
               rating: game.rating,
-              genres: game.genres,
+              Genders: game.genres,
             };
           });
           const concatenacion = infoGamesDB.concat(infogames);
@@ -44,7 +48,24 @@ async function getAllVideoGames(req, res) {
     if (page) {
       axios.get(`${URL}?key=${API_KEY}&page=${page}`).then(({ data }) => {
         if (data) {
-          res.status(200).json(data);
+          function HandlePlatformNames(platforms) {
+            return platforms.map((platform) => platform.platform.name);
+          }
+
+          const infogames = data.results.map((game) => {
+            return {
+              id: game.id,
+              name: game.name,
+              description:
+                "La descripcion del juego se encuentra al buscar por params",
+              platforms: HandlePlatformNames(game.platforms),
+              image: game.background_image,
+              released: game.released,
+              rating: game.rating,
+              Genders: game.genres,
+            };
+          });
+          res.status(200).json(infogames);
         } else {
           res.status(400).json({ message: "loading fail" });
         }
@@ -64,11 +85,25 @@ async function getVideoGamesById(req, res) {
           { model: Genders, attributes: ["name"], through: { attributes: [] } },
         ],
       });
-      res.status(200).json(videoGamesDB);
+
+      res.status(200).json( videoGamesDB );
     } else {
       axios.get(`${URL}/${idVideogame}?key=${API_KEY}`).then(({ data }) => {
         if (data) {
-          res.status(200).json(data);
+          function HandlePlatformNames(platforms) {
+            return platforms.map((platform) => platform.platform.name);
+          }
+
+          const videogamesbyID = {
+            id: data.id,
+            name: data.name,
+            description: data.description,
+            platforms: HandlePlatformNames(data.platforms),
+            image: data.background_image,
+            released: data.released,
+            Genders: data.genres,
+          };
+          res.status(200).json(videogamesbyID);
         } else {
           res.status(400).json({ message: "Videogame could not be obtained" });
         }
@@ -126,7 +161,7 @@ const postVideoGame = async (req, res) => {
         },
       },
     });
-    await newVideogame.addGenders(genreNames)
+    await newVideogame.addGenders(genreNames);
     res.status(200).json({
       message: "Videogame created successfully",
     });

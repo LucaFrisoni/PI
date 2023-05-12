@@ -1,19 +1,80 @@
-
-import './App.css';
+import "./App.css";
 import axios from "axios";
-import { useState,  } from "react";
-import { Routes, Route, useNavigate,useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
+import { getAll,getGenders } from "./Redux/Actions";
 
+import Login from "./Components/Login/Login";
+import Cards from "./Components/Cards/Cards";
+import About from "./Components/About/About";
+import Detail from "./Components/Detail/Detail";
+import Favorites from "./Components/Favorites/Favorites";
+import Create from "./Components/Create/Create";
+import Nav from "./Components/Nav/Nav";
 
+// hacer peticion al back de todos los personajes y mandarselo a Cards
 
-
-
+const URL = "http://localhost:3001/videogames/all";
+const URL2 = "http://localhost:3001/videogames/all?page=2";
+const URL3 = "http://localhost:3001/videogames/all?page=3";
+const URL4 = "http://localhost:3001/videogames/all?page=4";
+const URL5 = "http://localhost:3001/videogames/all?page=5";
+const URL6 = "http://localhost:3001/videogames/all?page=6";
 
 function App() {
+  const dispatch = useDispatch();
+// ----------------------------------------------------------------Hooks------------------------------------------------------------------------------
+
+  useEffect(() => {
+    dispatch(getGenders());
+  }, []);
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        const [
+          response1,
+          response2,
+          response3,
+          response4,
+          response5,
+          response6,
+        ] = await Promise.all([
+          axios.get(URL),
+          axios.get(URL2),
+          axios.get(URL3),
+          axios.get(URL4),
+          axios.get(URL5),
+          axios.get(URL6),
+        ]);
+        const allData = [
+          ...response1.data,
+          ...response2.data,
+          ...response3.data,
+          ...response4.data,
+          ...response5.data,
+          ...response6.data
+        ];
+        dispatch(getAll(allData));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAllData();
+  }, []);
+
   return (
     <div>
-     
+      <Routes>
+        <Route path="/" element={<Login />}></Route>
+        <Route path="/home" element={<Cards />}></Route>
+        <Route path="/about" element={<About />}></Route>
+        <Route path="/detail/:id" element={<Detail />}></Route>
+        <Route path="/create" element={<Create />}></Route>
+        <Route path="/favorites" element={<Favorites />}></Route>
+      </Routes>
     </div>
   );
 }
