@@ -2,9 +2,9 @@ import "./App.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { getAll,getGenders } from "./Redux/Actions";
+import { getAll, getGenders } from "./Redux/Actions";
 
 import Login from "./Components/Login/Login";
 import Cards from "./Components/Cards/Cards";
@@ -13,7 +13,7 @@ import Detail from "./Components/Detail/Detail";
 import Favorites from "./Components/Favorites/Favorites";
 import Create from "./Components/Create/Create";
 import Nav from "./Components/Nav/Nav";
-
+import { getPlatforms, getDates } from "./Redux/Actions";
 // hacer peticion al back de todos los personajes y mandarselo a Cards
 
 const URL = "http://localhost:3001/videogames/all";
@@ -25,11 +25,34 @@ const URL6 = "http://localhost:3001/videogames/all?page=6";
 
 function App() {
   const dispatch = useDispatch();
-// ----------------------------------------------------------------Hooks------------------------------------------------------------------------------
+  // ----------------------------------------------------------------Hooks------------------------------------------------------------------------------
+
+  const games = useSelector((state) => state.allVideoGames);
 
   useEffect(() => {
     dispatch(getGenders());
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    const dates = games.map((game) => game.released.slice(0, 4));
+    const uniqueDates = dates.filter(
+      (date, index) => dates.indexOf(date) === index
+    );
+    const sortedDates = uniqueDates.sort();
+    dispatch(getDates(sortedDates));
+  }, [dispatch, games]);
+
+  useEffect(() => {
+    const newPlatforms = [];
+    games.forEach((game) => {
+      game.platforms.forEach((platform) => {
+        if (!newPlatforms.includes(platform)) {
+          newPlatforms.push(platform);
+        }
+      });
+    });
+    dispatch(getPlatforms(newPlatforms));
+  }, [dispatch, games]);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -55,7 +78,7 @@ function App() {
           ...response3.data,
           ...response4.data,
           ...response5.data,
-          ...response6.data
+          ...response6.data,
         ];
         dispatch(getAll(allData));
       } catch (error) {
@@ -63,7 +86,7 @@ function App() {
       }
     };
     fetchAllData();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>

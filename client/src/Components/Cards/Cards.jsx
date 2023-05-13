@@ -1,22 +1,37 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
-
+import { useState } from "react";
+import {
+  GenderFilter,
+  reset,
+  ratingFilter,
+  orderFilter,
+  sorceFilter,
+  platformFilter,
+  dateFilter,
+} from "../../Redux/Actions";
 import Card from "./Card";
 import "./Cards.css";
 
 function Cards() {
-  // ----------------------------------------------------------------Hooks------------------------------------------------------------------------------
   // ----------------------------------------------------------------Selectors------------------------------------------------------------------------------
   const games = useSelector((state) => state.allVideoGames);
   const filters = useSelector((state) => state.filtersGames);
   const allGenres = useSelector((state) => state.allGenders);
-  console.log(allGenres)
+  const allPlatforms = useSelector((state) => state.allPlatforms);
+  const allDates = useSelector((state) => state.allDates);
+  console.log(allGenres);
+
+  // ----------------------------------------------------------------Hooks------------------------------------------------------------------------------
+  const dispatch = useDispatch();
+
+  console.log(allPlatforms);
   // ----------------------------------------------------------------Paging------------------------------------------------------------------------------
   console.log(games);
   const [pages, setPages] = useState(1);
   const itemsPerPage = 15;
   const startIndex = (pages - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+
   // ----------------------------------------------------------------Handlers------------------------------------------------------------------------------
   const handleNext = () => {
     setPages(pages + 1);
@@ -25,24 +40,108 @@ function Cards() {
   const handlePrev = () => {
     setPages(pages - 1);
   };
-  /// Selects : Genders: // Ratings(de numes) // ORDER -ASC O DESC // SOURCE DATABASE-API // PLATFORMS PS5-PS4 ETC.. // DATE
+
+  const handleGenresOptions = (event) => {
+    dispatch(GenderFilter(event.target.value));
+    setPages(1);
+  };
+
+  const handleReset = () => {
+    dispatch(reset());
+    setPages(1);
+    document.getElementById("Genders").selectedIndex = 0;
+    document.getElementById("Ratings").selectedIndex = 0;
+    document.getElementById("Order").selectedIndex = 0;
+    document.getElementById("Source").selectedIndex = 0;
+    document.getElementById("Platforms").selectedIndex = 0;
+    document.getElementById("Date").selectedIndex = 0;
+  };
+
+  
+  const handleRatingOptions = (event) => {
+    dispatch(ratingFilter(event.target.value));
+    setPages(1);
+  };
+
+  const handleOrderOptions = (event) => {
+    dispatch(orderFilter(event.target.value));
+    setPages(1);
+  };
+
+  const handleSourceOptions = (event) => {
+    dispatch(sorceFilter(event.target.value));
+    setPages(1);
+  };
+
+  const handlePlatforms = (event) => {
+    dispatch(platformFilter(event.target.value));
+    setPages(1);
+  };
+
+  const handleDateOptions = (event) => {
+    dispatch(dateFilter(event.target.value));
+    setPages(1);
+  };
+
+  /// Selects : Genders: // Ratings(de numes) // ORDER -ASC O DESC // SOURCE DATABASE-API // PLATFORMS PS5-PS4 ETC.. // DATE => podes hacer un input que busque los
   return (
     <div>
       <h1>Home</h1>
       <div className="container-selects">
-        <select id="Genders">
+        <select id="Genders" defaultValue="" onChange={handleGenresOptions}>
+          <option value="" disabled hidden>
+            Genders
+          </option>
           {allGenres.map((genre) => (
-            <option key={genre.id}  value={genre.id}>{genre.name}</option>
+            <option key={genre.id} value={genre.name}>
+              {genre.name}
+            </option>
           ))}
         </select>
-        <select></select>
-        <select></select>
-        <select></select>
-        <select></select>
-        <select></select>
+        <select id="Ratings" defaultValue="" onChange={handleRatingOptions}>
+          <option value="" disabled hidden>
+            Ratings
+          </option>
+          <option value="one">1</option>
+          <option value="two">2</option>
+          <option value="three">3</option>
+          <option value="four">4</option>
+          <option value="five">5</option>
+        </select>
+        <select id="Order" defaultValue="" onChange={handleOrderOptions}>
+          <option value="" disabled hidden>
+            Order
+          </option>
+          <option value="Ascendent">Ascendent</option>
+          <option value="Descendent">Descendent</option>
+        </select>
+        <select id="Source" defaultValue="" onChange={handleSourceOptions}>
+          <option value="" disabled hidden>
+            Source
+          </option>
+          <option value="Api">Api</option>
+          <option value="dataBase">Data Base</option>
+        </select>
+        <select id="Platforms" defaultValue="" onChange={handlePlatforms}>
+          <option value="" disabled hidden>
+            Platforms
+          </option>
+          {allPlatforms.map((plat) => (
+            <option value={plat} key={plat}>
+              {plat}
+            </option>
+          ))}
+        </select>
+        <select id="Date" defaultValue="" onChange={handleDateOptions}>
+          <option value="" disabled hidden>
+            Date
+          </option>
+       {allDates.map((date)=><option value={date} key={date}>{date}</option>)}
+        </select>
+        <button onClick={handleReset}>Reset</button>
       </div>
       <div className="container">
-        {(filters.length > 0 ? filters : games)
+        {(filters && filters.length > 0 ? filters : games)
           .slice(startIndex, endIndex)
           .map((e) => {
             return (
@@ -63,7 +162,7 @@ function Cards() {
           Prev
         </button>
         <button>{pages}</button>
-        <button onClick={handleNext} disabled={endIndex >= games.length}>
+        <button onClick={handleNext} disabled={endIndex >= games.length || filters.length}>
           Next
         </button>
       </div>
