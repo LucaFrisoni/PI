@@ -11,6 +11,7 @@ import {
   RESET,
   ALL_PLATFORMS,
   ALL_DATES,
+  APPLY_FILTERS,
 } from "./Actions";
 
 const initialState = {
@@ -20,6 +21,14 @@ const initialState = {
   allDates: [],
   idGame: {},
   filtersGames: [],
+  filters: {
+    gender: "",
+    rating: "",
+    order: "",
+    source: "",
+    platform: "",
+    date: "",
+  },
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -28,6 +37,7 @@ const reducer = (state = initialState, { type, payload }) => {
       const newState = {
         ...state,
         allVideoGames: [...payload],
+        filtersGames: [...payload]
       };
       return newState;
 
@@ -36,6 +46,7 @@ const reducer = (state = initialState, { type, payload }) => {
 
     case ALL_PLATFORMS:
       return { ...state, allPlatforms: [...payload] };
+
     case ALL_DATES:
       return { ...state, allDates: [...payload] };
 
@@ -43,115 +54,190 @@ const reducer = (state = initialState, { type, payload }) => {
       return { ...state, idGame: { ...payload } };
 
     case ORDER:
-      const compareById = (a, b) => {
-        if (a.id < b.id) {
-          return payload === "Ascendent" ? -1 : 1;
-        }
-        if (a.id > b.id) {
-          return payload === "Ascendent" ? 1 : -1;
-        }
-        return 0;
-      };
-      const copyAllVideoGames = [...state.allVideoGames];
-      const sortedGames = copyAllVideoGames.sort(compareById);
-   
+      // const compareById = (a, b) => {
+      //   if (a.id < b.id) {
+      //     return payload === "Ascendent" ? -1 : 1;
+      //   }
+      //   if (a.id > b.id) {
+      //     return payload === "Ascendent" ? 1 : -1;
+      //   }
+      //   return 0;
+      // };
+      // const copyAllVideoGames = [...state.allVideoGames];
+      // const sortedGames = copyAllVideoGames.sort(compareById);
+
       return {
         ...state,
-        filtersGames: sortedGames,
+        filters: { ...state.filters, order: payload },
       };
 
     case PLATFORM:
-      const platGames = state.allVideoGames.filter((game) =>
-        game.platforms.includes(payload)
-      );
-  
-      return { ...state, filtersGames: platGames };
+      return {
+        ...state,
+        filters: { ...state.filters, platform: payload },
+      };
 
     case DATE:
-      const dateGame = state.allVideoGames.filter(
-        (game) => game.released.slice(0, 4) === payload
-      );
-      
-      
-      return { ...state, filtersGames: dateGame };
+      return {
+        ...state,
+        filters: { ...state.filters, date: payload },
+      };
 
     case RATING:
-      let filterByRating;
-    
-      if (payload === "one") {
-        filterByRating = state.allVideoGames.filter((game) => game.rating <= 1);
-        if (filterByRating.length === 0) {
-          alert("There are no games with that Rating");
-          return state;
-        }
-      }
-      if (payload === "two") {
-        filterByRating = state.allVideoGames.filter(
-          (game) => game.rating > 1 && game.rating <= 2
-        );
-        if (filterByRating.length === 0) {
-          alert("There are no games with that Rating");
-          return state;
-        }
-      }
-      if (payload === "three") {
-        filterByRating = state.allVideoGames.filter(
-          (game) => game.rating > 2 && game.rating <= 3
-        );
-        if (filterByRating.length === 0) {
-          alert("There are no games with that Rating");
-          return state;
-        }
-      }
-      if (payload === "four") {
-        filterByRating = state.allVideoGames.filter(
-          (game) => game.rating > 3 && game.rating <= 4
-        );
-        if (filterByRating.length === 0) {
-          alert("There are no games with that Rating");
-          return state;
-        }
-      }
-      if (payload === "five") {
-        filterByRating = state.allVideoGames.filter(
-          (game) => game.rating > 4 && game.rating <= 5
-        );
-        if (filterByRating.length === 0) {
-          alert("There are no games with that Rating");
-          return state;
-        }
-      }
-
-      return { ...state, filtersGames: filterByRating };
+      return {
+        ...state,
+        filters: { ...state.filters, rating: payload },
+      };
 
     case RESET:
-      return { ...state, filtersGames: [] };
+      return {
+        ...state,
+        filtersGames: [],
+        filters: {
+          ...state.filters,
+          gender: "",
+          rating: "",
+          order: "",
+          source: "",
+          platform: "",
+          date: "",
+        },
+      };
 
     case GENDER_FILTER:
-      const filteredByGender = state.allVideoGames.filter((game) =>
-        game.Genders.some((genre) => genre.name === payload)
-      );
-      if (filteredByGender.length === 0) {
-        alert("There are no games with that Genre");
-        return state;
-      }
-  
-      return { ...state, filtersGames: filteredByGender };
+      return {
+        ...state,
+        // filtersGames: filteredByGender,
+        filters: { ...state.filters, gender: payload },
+      };
 
     case SOURCE_FILTER:
-      let sourceGames;
+      return {
+        ...state,
+        filters: { ...state.filters, source: payload },
+      };
 
-      if (payload === "Api") {
-        sourceGames = state.allVideoGames.filter(
-          (game) => typeof game.id === "number"
+    case APPLY_FILTERS:
+      var filterssGames = state.allVideoGames;
+      // ----------------------------------------------------------------Gender------------------------------------------------------------------------------
+      if (payload.gender) {
+        filterssGames = filterssGames.filter((game) =>
+          game.Genders.some((gender) => gender.name === payload.gender)
         );
       }
-      if (payload === "dataBase") {
-        sourceGames = state.allVideoGames.filter(
-          (game) => typeof game.id === "string"
-        );
+      // ----------------------------------------------------------------Platform------------------------------------------------------------------------------
+      if (payload.platform) {
+        filterssGames = filterssGames.filter((game) => {
+         return game.platforms.some((plat) => plat === payload.platform);
+        });
+        if (filterssGames.length === 0 ) {
+          alert("There are no games with such filters");
+          return state;
+        }
       }
-      return { ...state, filtersGames: sourceGames };
+     
+
+      // ----------------------------------------------------------------Rating------------------------------------------------------------------------------
+
+      if (payload.rating) {
+        if (payload.rating === "one") {
+          filterssGames = filterssGames.filter(
+            (game) => game.rating >= 1 && game.rating < 2
+          );
+          if (filterssGames.length === 0) {
+            alert("There are no games with such filters");
+            return state;
+          }
+        }
+        if (payload.rating === "two") {
+          filterssGames = filterssGames.filter(
+            (game) => game.rating >= 2 && game.rating <= 3
+          );
+          if (filterssGames.length === 0) {
+            alert("There are no games with such filters");
+            return state;
+          }
+        }
+        if (payload.rating === "three") {
+          filterssGames = filterssGames.filter(
+            (game) => game.rating >= 3 && game.rating < 4
+          );
+          if (filterssGames.length === 0) {
+            alert("There are no games with such filters");
+            return state;
+          }
+        }
+        if (payload.rating === "four") {
+          filterssGames = filterssGames.filter(
+            (game) => game.rating >= 4 && game.rating <= 5
+          );
+          if (filterssGames.length === 0) {
+            alert("There are no games with such filters");
+            return state;
+          }
+        }
+        if (payload.rating === "five") {
+          filterssGames = filterssGames.filter((game) => game.rating === 5);
+          if (filterssGames.length === 0) {
+            alert("There are no games with such filters");
+            return state;
+          }
+        }
+      }
+      // ----------------------------------------------------------------Source------------------------------------------------------------------------------
+
+      if (payload.source) {
+        if (payload.source === "Api") {
+          filterssGames = filterssGames.filter(
+            (game) => typeof game.id === "number"
+          );
+          if (filterssGames.length === 0) {
+            alert("There are no games with such filters");
+            return state;
+          }
+        }
+        if (payload.source === "dataBase") {
+          filterssGames = filterssGames.filter(
+            (game) => typeof game.id === "string"
+          );
+          if (filterssGames.length === 0) {
+            alert("There are no games with such filters");
+            return state;
+          }
+        }
+      }
+
+      // ----------------------------------------------------------------Date------------------------------------------------------------------------------
+
+      if (payload.date) {
+        filterssGames = filterssGames.filter(
+          (game) => game.released.slice(0, 4) === payload.date
+        );
+        if (filterssGames.length === 0) {
+          alert("There are no games with such filters");
+          return state;
+        }
+      }
+
+      // ----------------------------------------------------------------Order------------------------------------------------------------------------------
+
+      if (payload.order) {
+        const compareById = (a, b) => {
+          if (a.id < b.id) {
+            return payload.order === "Ascendent" ? -1 : 1;
+          }
+          if (a.id > b.id) {
+            return payload.order === "Ascendent" ? 1 : -1;
+          }
+          return 0;
+        };
+        let copyfilterGames = [...filterssGames]
+        filterssGames.sort(compareById);
+      }
+      return {
+        ...state,
+        filtersGames: filterssGames,
+      };
 
     default:
       return state;

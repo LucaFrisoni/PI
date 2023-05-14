@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {
   GenderFilter,
   reset,
@@ -8,6 +8,7 @@ import {
   sorceFilter,
   platformFilter,
   dateFilter,
+  allFilts
 } from "../../Redux/Actions";
 import Card from "./Card";
 import "./Cards.css";
@@ -19,14 +20,15 @@ function Cards() {
   const allGenres = useSelector((state) => state.allGenders);
   const allPlatforms = useSelector((state) => state.allPlatforms);
   const allDates = useSelector((state) => state.allDates);
+  const allfilters = useSelector((state) => state.filters);
   console.log(allGenres);
+  console.log(allPlatforms);
+  console.log(games);
 
   // ----------------------------------------------------------------Hooks------------------------------------------------------------------------------
   const dispatch = useDispatch();
 
-  console.log(allPlatforms);
   // ----------------------------------------------------------------Paging------------------------------------------------------------------------------
-  console.log(games);
   const [pages, setPages] = useState(1);
   const itemsPerPage = 15;
   const startIndex = (pages - 1) * itemsPerPage;
@@ -44,6 +46,7 @@ function Cards() {
   const handleGenresOptions = (event) => {
     dispatch(GenderFilter(event.target.value));
     setPages(1);
+  
   };
 
   const handleReset = () => {
@@ -57,31 +60,41 @@ function Cards() {
     document.getElementById("Date").selectedIndex = 0;
   };
 
-  
   const handleRatingOptions = (event) => {
     dispatch(ratingFilter(event.target.value));
     setPages(1);
+   
   };
 
   const handleOrderOptions = (event) => {
     dispatch(orderFilter(event.target.value));
     setPages(1);
+   
   };
 
   const handleSourceOptions = (event) => {
     dispatch(sorceFilter(event.target.value));
     setPages(1);
+  
   };
 
   const handlePlatforms = (event) => {
     dispatch(platformFilter(event.target.value));
     setPages(1);
+  
   };
 
   const handleDateOptions = (event) => {
     dispatch(dateFilter(event.target.value));
     setPages(1);
+ 
   };
+
+  useEffect(() => {
+    dispatch(allFilts(allfilters));
+  }, [allfilters, dispatch]);
+
+
 
   /// Selects : Genders: // Ratings(de numes) // ORDER -ASC O DESC // SOURCE DATABASE-API // PLATFORMS PS5-PS4 ETC.. // DATE => podes hacer un input que busque los
   return (
@@ -136,7 +149,11 @@ function Cards() {
           <option value="" disabled hidden>
             Date
           </option>
-       {allDates.map((date)=><option value={date} key={date}>{date}</option>)}
+          {allDates.map((date) => (
+            <option value={date} key={date}>
+              {date}
+            </option>
+          ))}
         </select>
         <button onClick={handleReset}>Reset</button>
       </div>
@@ -162,7 +179,10 @@ function Cards() {
           Prev
         </button>
         <button>{pages}</button>
-        <button onClick={handleNext} disabled={endIndex >= games.length || filters.length}>
+        <button
+          onClick={handleNext}
+          disabled={endIndex >= filters.length}
+        >
           Next
         </button>
       </div>

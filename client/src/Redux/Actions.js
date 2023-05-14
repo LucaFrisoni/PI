@@ -12,6 +12,7 @@ export const ALL_GENDERS = "ALL_GENDERS";
 export const RESET = "RESET";
 export const ALL_PLATFORMS = "ALL_PLATFORMS";
 export const ALL_DATES = "ALL_DATES";
+export const APPLY_FILTERS ="APPLY_FILTERS"
 
 const URL = "http://localhost:3001/genres";
 
@@ -49,3 +50,5 @@ export const sorceFilter = (payload) => ({ type: SOURCE_FILTER, payload });
 export const platformFilter = (payload) => ({ type: PLATFORM, payload });
 
 export const dateFilter = (payload) => ({ type: DATE, payload });
+
+export const allFilts =(payload) => ({type:APPLY_FILTERS,payload})
