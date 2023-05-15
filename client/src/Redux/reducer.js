@@ -12,6 +12,7 @@ import {
   ALL_PLATFORMS,
   ALL_DATES,
   APPLY_FILTERS,
+  RESET_ID
 } from "./Actions";
 
 const initialState = {
@@ -37,7 +38,7 @@ const reducer = (state = initialState, { type, payload }) => {
       const newState = {
         ...state,
         allVideoGames: [...payload],
-        filtersGames: [...payload]
+        filtersGames: [...payload],
       };
       return newState;
 
@@ -52,6 +53,9 @@ const reducer = (state = initialState, { type, payload }) => {
 
     case GAME_ID:
       return { ...state, idGame: { ...payload } };
+case RESET_ID:
+      return {...state,idGame:{}} 
+
 
     case ORDER:
       // const compareById = (a, b) => {
@@ -128,14 +132,13 @@ const reducer = (state = initialState, { type, payload }) => {
       // ----------------------------------------------------------------Platform------------------------------------------------------------------------------
       if (payload.platform) {
         filterssGames = filterssGames.filter((game) => {
-         return game.platforms.some((plat) => plat === payload.platform);
+          return game.platforms.some((plat) => plat === payload.platform);
         });
-        if (filterssGames.length === 0 ) {
+        if (filterssGames.length === 0) {
           alert("There are no games with such filters");
           return state;
         }
       }
-     
 
       // ----------------------------------------------------------------Rating------------------------------------------------------------------------------
 
@@ -220,20 +223,28 @@ const reducer = (state = initialState, { type, payload }) => {
       }
 
       // ----------------------------------------------------------------Order------------------------------------------------------------------------------
-
+      //   {
+      //     const sortedByName = payload === "Ascendant" ?
+      //     state.videogames.sort((a, b) => a.name.localeCompare(b.name)) :
+      //     state.videogames.sort((a, b) => b.name.localeCompare(a.name))
+      //     return{
+      //         ...state,
+      //         videogames: sortedByName
+      //     }
+      // }
       if (payload.order) {
-        const compareById = (a, b) => {
-          if (a.id < b.id) {
-            return payload.order === "Ascendent" ? -1 : 1;
-          }
-          if (a.id > b.id) {
-            return payload.order === "Ascendent" ? 1 : -1;
-          }
-          return 0;
-        };
-        let copyfilterGames = [...filterssGames]
-        filterssGames.sort(compareById);
+        console.log("estoy aqui")
+        // const sortedByName =
+          payload.order === "Ascendent"
+            ? filterssGames.sort((a, b) => a.name.localeCompare(b.name))
+            : filterssGames.sort((a, b) => b.name.localeCompare(a.name));
+            // if (sortedByName) {
+            //   console.log("me filtre")
+            //   filterssGames = sortedByName
+            // }
       }
+  
+
       return {
         ...state,
         filtersGames: filterssGames,

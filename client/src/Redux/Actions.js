@@ -13,6 +13,7 @@ export const RESET = "RESET";
 export const ALL_PLATFORMS = "ALL_PLATFORMS";
 export const ALL_DATES = "ALL_DATES";
 export const APPLY_FILTERS ="APPLY_FILTERS"
+export const RESET_ID = "RESET_ID"
 
 const URL = "http://localhost:3001/genres";
 
@@ -37,6 +38,8 @@ export const getPlatforms = (payload) => ({ type: ALL_PLATFORMS, payload });
 export const getDates = (payload) => ({ type: ALL_DATES, payload });
 // ----------------------------------------------------------------Reset------------------------------------------------------------------------------
 export const reset = () => ({ type: RESET });
+
+export const resetId = () => ({type:RESET_ID})
 
 // ----------------------------------------------------------------Filters------------------------------------------------------------------------------
 export const GenderFilter = (payload) => ({ type: GENDER_FILTER, payload });
