@@ -1,7 +1,7 @@
 import "./App.css";
 import axios from "axios";
-import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { getAll, getGenders } from "./Redux/Actions";
@@ -88,8 +88,15 @@ function App() {
     fetchAllData();
   }, [dispatch]);
 
+  const location = useLocation();
+
   return (
     <div>
+      {location.pathname === "/" ||
+      location.pathname === "/detail/:id" ||
+      location.pathname === "/about" ? null : (
+        <Nav />
+      )}
       <Routes>
         <Route path="/" element={<Login />}></Route>
         <Route path="/home" element={<Cards />}></Route>

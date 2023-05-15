@@ -12,7 +12,8 @@ import {
   ALL_PLATFORMS,
   ALL_DATES,
   APPLY_FILTERS,
-  RESET_ID
+  RESET_ID,
+  GAME_NAME,
 } from "./Actions";
 
 const initialState = {
@@ -38,7 +39,7 @@ const reducer = (state = initialState, { type, payload }) => {
       const newState = {
         ...state,
         allVideoGames: [...payload],
-        filtersGames: [...payload],
+       
       };
       return newState;
 
@@ -53,23 +54,14 @@ const reducer = (state = initialState, { type, payload }) => {
 
     case GAME_ID:
       return { ...state, idGame: { ...payload } };
-case RESET_ID:
-      return {...state,idGame:{}} 
 
+    case RESET_ID:
+      return { ...state, idGame: {} };
+
+    case GAME_NAME:
+      return {...state,filtersGames:payload}
 
     case ORDER:
-      // const compareById = (a, b) => {
-      //   if (a.id < b.id) {
-      //     return payload === "Ascendent" ? -1 : 1;
-      //   }
-      //   if (a.id > b.id) {
-      //     return payload === "Ascendent" ? 1 : -1;
-      //   }
-      //   return 0;
-      // };
-      // const copyAllVideoGames = [...state.allVideoGames];
-      // const sortedGames = copyAllVideoGames.sort(compareById);
-
       return {
         ...state,
         filters: { ...state.filters, order: payload },
@@ -233,17 +225,28 @@ case RESET_ID:
       //     }
       // }
       if (payload.order) {
-        console.log("estoy aqui")
-        // const sortedByName =
+        console.log("estoy aqui");
+        if (filterssGames.length === state.allVideoGames.length) {
+          const sortedGames = [...filterssGames]; // Crear una copia del arreglo de juegos filtrados
+
+          sortedGames.sort((a, b) => {
+            if (payload.order === "Ascendent") {
+              return a.name.localeCompare(b.name);
+            } else {
+              return b.name.localeCompare(a.name);
+            }
+          });
+
+          return {
+            ...state,
+            filtersGames: sortedGames,
+          };
+        }
+        if (filterssGames.length < state.allVideoGames.length)
           payload.order === "Ascendent"
             ? filterssGames.sort((a, b) => a.name.localeCompare(b.name))
             : filterssGames.sort((a, b) => b.name.localeCompare(a.name));
-            // if (sortedByName) {
-            //   console.log("me filtre")
-            //   filterssGames = sortedByName
-            // }
       }
-  
 
       return {
         ...state,

@@ -14,6 +14,7 @@ export const ALL_PLATFORMS = "ALL_PLATFORMS";
 export const ALL_DATES = "ALL_DATES";
 export const APPLY_FILTERS ="APPLY_FILTERS"
 export const RESET_ID = "RESET_ID"
+export const GAME_NAME ="GAME_NAME"
 
 const URL = "http://localhost:3001/genres";
 
@@ -33,9 +34,12 @@ export const getGenders = () => {
 };
 export const getGameById = (data) => ({ type: GAME_ID, payload: data });
 
+export const getGameByName = (payload) => ({type:GAME_NAME,payload})
+
 export const getPlatforms = (payload) => ({ type: ALL_PLATFORMS, payload });
 
 export const getDates = (payload) => ({ type: ALL_DATES, payload });
+
 // ----------------------------------------------------------------Reset------------------------------------------------------------------------------
 export const reset = () => ({ type: RESET });
 

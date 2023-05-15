@@ -7,6 +7,7 @@ const { Op } = require("sequelize");
 const API_KEY = process.env.API_KEY;
 const URL = "https://api.rawg.io/api/games";
 
+
 async function getAllVideoGames(req, res) {
   const { page } = req.query;
 
@@ -122,10 +123,25 @@ function getVideoGamesByName(req, res) {
   }
 
   try {
-    console.log("Realizando petición a la API...");
     axios.get(`${URL}?search=${search}&key=${API_KEY}`).then(({ data }) => {
       if (data && data.results) {
-        res.status(200).json(data.results);
+        function HandlePlatformNames(platforms) {
+          return platforms.map((platform) => platform.platform.name);
+        }
+        const infogames = data.results.map((game) => {
+          return {
+            id: game.id,
+            name: game.name,
+            description:
+              "La descripcion del juego se encuentra al buscar por params",
+            platforms: HandlePlatformNames(game.platforms),
+            image: game.background_image,
+            released: game.released,
+            rating: game.rating,
+            Genders: game.genres,
+          };
+        });
+        res.status(200).json(infogames);
       } else {
         res.status(400).json({ message: "Videogame could not be obtained" });
       }
@@ -144,7 +160,7 @@ function HandlePlatformNames(platforms) {
 const postVideoGame = async (req, res) => {
   const { name, description, platforms, released, rating, genres, image } =
     req.body;
-  try {
+    try {
     const newVideogame = await Videogames.create({
       id: uuidv4(),
       name,
@@ -176,26 +192,4 @@ module.exports = {
   getVideoGamesByName,
   postVideoGame,
 };
-// const [game, created] = await Videogames.findOrCreate({
-//   where: { name },
-//   defaults: {
-//     id: uuidv4(),
-//     name,
-//     description,
-//     platforms: HandlePlatformNames(platforms),
-//     image,
-//     released,
-//     rating,
-//   },
-// });
-// const genderNames = Genders.findAll({ where: { id: { [Op.in]: genres } } })[
-//   ("action", "adventure")
-// ];
-// if (created) {
-//   game.addGenders(genderNames);
 
-//   // await game.addGenders(genresArray); // la relaciones de muchos a muchos
-//   res.status(200).json({ message: "Game created" });
-// } else {
-//   res.status(200).json({ message: "Game already exist" });
-//}
