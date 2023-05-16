@@ -3,6 +3,7 @@ const { Sequelize } = require("sequelize");
 const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 const VideogamesModel = require("./Models/Videogames");
 const GenderModel =require("./Models/Gender")
+const UserModel = require("./Models/Users")
 
 //Te conectas a la Db instanciando Sequilize
 const sequelize = new Sequelize(
@@ -16,7 +17,7 @@ const sequelize = new Sequelize(
   //Le paso sequeilize a los models
 VideogamesModel(sequelize);
 GenderModel(sequelize);
-
+UserModel(sequelize)
 
   //Relaciono los Models => Relacion Muchos a Muchos
 const {Videogames,Genders} = sequelize.models
@@ -25,5 +26,5 @@ Genders.belongsToMany(Videogames,{through:"16horasDeMiVida"})
 
 module.exports={
     ...sequelize.models,
-    conn:sequelize,
+    conn:sequelize,sequelize
 };

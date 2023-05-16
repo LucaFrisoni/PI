@@ -24,7 +24,7 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background: linear-gradient(#000, #00d8d6, #000);
+  background: linear-gradient(#000, #00dfc4, #000);
   animation: animate 5s linear infinite;
 }
 @keyframes animate {
@@ -46,7 +46,7 @@
   transition: 1.5s;
 }
 .section-login span:hover {
-  background: #00d8d6;
+  background: #00dfc4;
   transition: 0s;
 }
 section .signin {
@@ -72,7 +72,7 @@ section .signin .content {
 }
 section .signin .content h2 {
   font-size: 2em;
-  color: #00d8d6;
+  color: #00dfc4;
 }
 section .signin .content .form {
   width: 100%;
@@ -126,14 +126,14 @@ section .signin .content .form .inputBx i {
   text-decoration: none;
 }
 .signin .content .form .links a:nth-child(2) {
-  color: #00d8d6;
+  color: #00dfc4;
   font-weight: 600;
   
 }
 
 .signin .content .form .inputBx input[type="submit"] {
   padding: 10px;
-  background: #00d8d6;
+  background: #00dfc4;
   color: #111;
   font-weight: 600;
   font-size: 1.25em;
