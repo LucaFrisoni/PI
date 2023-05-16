@@ -13,6 +13,7 @@ import Detail from "./Components/Detail/Detail";
 import Favorites from "./Components/Favorites/Favorites";
 import Create from "./Components/Create/Create";
 import Nav from "./Components/Nav/Nav";
+import SignUp from "./Components/Sign up/Signup";
 import { getPlatforms, getDates } from "./Redux/Actions";
 // hacer peticion al back de todos los personajes y mandarselo a Cards
 
@@ -94,7 +95,7 @@ function App() {
     <div>
       {location.pathname === "/" ||
       location.pathname === "/detail/:id" ||
-      location.pathname === "/about" ? null : (
+      location.pathname === "/about" || location.pathname === "/sign"  ? null : (
         <Nav />
       )}
       <Routes>
@@ -103,6 +104,7 @@ function App() {
         <Route path="/about" element={<About />}></Route>
         <Route path="/detail/:id" element={<Detail />}></Route>
         <Route path="/create" element={<Create />}></Route>
+        <Route path="/sign" element={<SignUp />}></Route>
         <Route path="/favorites" element={<Favorites />}></Route>
       </Routes>
     </div>
