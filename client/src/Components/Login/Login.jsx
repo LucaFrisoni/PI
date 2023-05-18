@@ -380,7 +380,7 @@ function Login() {
               <div className="inputBx">
                 <input
                   type="submit"
-                 
+                 value="Login"
                   disabled={Object.keys(errors).length > 0 && submitted}
                 />
               </div>
