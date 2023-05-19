@@ -44,7 +44,15 @@ function Nav() {
       );
     });
     if (gameFoundinApp.length > 0) {
-      dispatch(getGameByName(gameFoundinApp));
+      axios
+        .get(`http://localhost:3001/videogames/name?search=${gameName}`)
+        .then(({ data }) => {
+          dispatch(getGameByName(data));
+        })
+        .catch((error) => {
+          console.error("Error en la búsqueda:", error);
+        });
+      dispatch(getGameByName(gameFoundinApp))
     } else {
       axios
         .get(`http://localhost:3001/videogames/name?search=${gameName}`)
@@ -76,7 +84,7 @@ console.log(gameName)
             <a href="http://localhost:3000/about">About</a>
           </li>
           <li>
-            <a href="create">Create</a>
+            <a href="http://localhost:3000/create">Create</a>
           </li>
           <li>
             <a href="http://localhost:3000/">Log out</a>

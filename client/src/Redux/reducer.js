@@ -215,15 +215,7 @@ const reducer = (state = initialState, { type, payload }) => {
       }
 
       // ----------------------------------------------------------------Order------------------------------------------------------------------------------
-      //   {
-      //     const sortedByName = payload === "Ascendant" ?
-      //     state.videogames.sort((a, b) => a.name.localeCompare(b.name)) :
-      //     state.videogames.sort((a, b) => b.name.localeCompare(a.name))
-      //     return{
-      //         ...state,
-      //         videogames: sortedByName
-      //     }
-      // }
+      
       if (payload.order) {
         console.log("estoy aqui");
         if (filterssGames.length === state.allVideoGames.length) {

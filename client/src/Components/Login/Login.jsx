@@ -371,7 +371,7 @@ function Login() {
                 <p>{errors.password}</p>
               </div>
               <div className="links">
-                <a className="signin_btn" href="#">
+                <a className="signin_btn" href="http://localhost:3000/sign">
                   Forgot Password
                 </a>
 

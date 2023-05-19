@@ -132,7 +132,7 @@ function SignUp() {
   return (
     <div className="sign-body">
       <div className="container_sign">
-        <form onSubmit={handleSubmit} className="form signup">
+        <form onSubmit={handleSubmit} className="form">
           <h2>Sign up</h2>
           <div className="inputBox">
             <input
@@ -142,7 +142,7 @@ function SignUp() {
               value={user.userName}
               onChange={handleInputs}
             ></input>
-            <img className="img-sign" src={userrr}></img>
+            <img alt="imagen" className="img-sign" src={userrr}></img>
             <span className="sign-span">Username</span>
             <p>{errors.userName}</p>
           </div>
@@ -154,7 +154,7 @@ function SignUp() {
               value={user.email}
               onChange={handleInputs}
             ></input>
-            <img className="img-sign" src={email}></img>
+            <img alt="imagen" className="img-sign" src={email}></img>
             <span className="sign-span">Email address</span>
             <p>{errors.email}</p>
           </div>
@@ -166,7 +166,7 @@ function SignUp() {
               value={user.password}
               onChange={handleInputs}
             ></input>
-            <img className="img-sign" src={padlock}></img>
+            <img alt="imagen" className="img-sign" src={padlock}></img>
             <span className="sign-span">Create Password</span>
             <p>{errors.password}</p>
           </div>
@@ -178,7 +178,7 @@ function SignUp() {
               value={user.confirm_password}
               onChange={handleInputs}
             ></input>
-            <img className="img-sign" src={padlock}></img>
+            <img alt="imagen" className="img-sign" src={padlock}></img>
             <span className="sign-span">Confirm Password</span>
             <p>{errors.confirm_password}</p>
           </div>

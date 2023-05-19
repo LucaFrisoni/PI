@@ -47,11 +47,6 @@ function Cards() {
     topElement.scrollIntoView({ behavior: 'auto' });
   };
 
-  const handleGenresOptions = (event) => {
-    dispatch(GenderFilter(event.target.value));
-    setPages(1);
-  };
-
   const handleReset = () => {
     dispatch(reset());
     setPages(1);
@@ -64,6 +59,11 @@ function Cards() {
     const topElement = document.querySelector('#topElement')
     topElement.scrollIntoView({ behavior: 'smooth' });
   };
+  const handleGenresOptions = (event) => {
+    dispatch(GenderFilter(event.target.value));
+    setPages(1);
+  };
+
 
   const handleRatingOptions = (event) => {
     dispatch(ratingFilter(event.target.value));
@@ -89,6 +89,9 @@ function Cards() {
     dispatch(dateFilter(event.target.value));
     setPages(1);
   };
+
+
+
 
   useEffect(() => {
     dispatch(allFilts(allfilters));
