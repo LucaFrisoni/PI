@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   GenderFilter,
   reset,
@@ -21,31 +22,42 @@ function Cards() {
   const allPlatforms = useSelector((state) => state.allPlatforms);
   const allDates = useSelector((state) => state.allDates);
   const allfilters = useSelector((state) => state.filters);
+  const favoritesGames = useSelector((state)=> state.allFavs)
   console.log(allGenres);
   console.log(allPlatforms);
   console.log(games);
+  console.log(favoritesGames)
 
   // ----------------------------------------------------------------Hooks------------------------------------------------------------------------------
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   // ----------------------------------------------------------------Paging------------------------------------------------------------------------------
   const [pages, setPages] = useState(1);
   const itemsPerPage = 15;
   const startIndex = (pages - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  // ----------------------------------------------------------------Handlers------------------------------------------------------------------------------
+  // ----------------------------------------------------------------Handlers-Paging------------------------------------------------------------------------------
   const handleNext = () => {
     setPages(pages + 1);
+    navigate(`/home?page=${pages + 1}`);
     const topElement = document.querySelector('#topElement')
     topElement.scrollIntoView({ behavior: 'auto' });
   };
-
+  
   const handlePrev = () => {
     setPages(pages - 1);
     const topElement = document.querySelector('#topElement')
     topElement.scrollIntoView({ behavior: 'auto' });
+    navigate(`/home?page=${pages - 1}`);
   };
+// ----------------------------------------------------------------useEffect-Paging------------------------------------------------------------------------------
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const page = parseInt(searchParams.get("page")) || 1;
+    setPages(page);
+  }, [pages]);
+  // ----------------------------------------------------------------Handlers-Redux------------------------------------------------------------------------------
 
   const handleReset = () => {
     dispatch(reset());
@@ -96,6 +108,8 @@ function Cards() {
   useEffect(() => {
     dispatch(allFilts(allfilters));
   }, [allfilters, dispatch]);
+
+
 
   useEffect(() => {
     const originalBackground = document.body.style.backgroundImage;

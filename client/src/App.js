@@ -1,10 +1,10 @@
 import "./App.css";
 import axios from "axios";
-import { useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { useEffect,useState } from "react";
+import { Routes, Route, useLocation,Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getAll, getGenders } from "./Redux/Actions";
+import { getAll, getGenders,getFavs,getPlatforms, getDates,getDatesFav,getPlatformsFav } from "./Redux/Actions";
 
 import Login from "./Components/Login/Login";
 import Cards from "./Components/Cards/Cards";
@@ -14,7 +14,7 @@ import Favorites from "./Components/Favorites/Favorites";
 import Create from "./Components/Create/Create";
 import Nav from "./Components/Nav/Nav";
 import SignUp from "./Components/Sign up/Signup";
-import { getPlatforms, getDates } from "./Redux/Actions";
+
 // hacer peticion al back de todos los personajes y mandarselo a Cards
 
 const URL = "http://localhost:3001/videogames/all";
@@ -29,9 +29,13 @@ function App() {
   // ----------------------------------------------------------------Hooks------------------------------------------------------------------------------
 
   const games = useSelector((state) => state.allVideoGames);
+  const favGames = useSelector((state) => state.allFavs);
 
   useEffect(() => {
     dispatch(getGenders());
+  }, [dispatch]);
+  useEffect(() => {
+    dispatch(getFavs());
   }, [dispatch]);
 
   useEffect(() => {
@@ -42,6 +46,14 @@ function App() {
     const sortedDates = uniqueDates.sort();
     dispatch(getDates(sortedDates));
   }, [dispatch, games]);
+  useEffect(() => {
+    const datesFav = favGames.map((game) => game.released.slice(0, 4));
+    const uniqueDatesFav = datesFav.filter(
+      (date, index) => datesFav.indexOf(date) === index
+    );
+    const sortedDatesFav = uniqueDatesFav.sort();
+    dispatch(getDatesFav(sortedDatesFav));
+  }, [dispatch, favGames]);
 
   useEffect(() => {
     const newPlatforms = [];
@@ -54,6 +66,17 @@ function App() {
     });
     dispatch(getPlatforms(newPlatforms));
   }, [dispatch, games]);
+  useEffect(() => {
+    const newPlatformsFav = [];
+   favGames.forEach((game) => {
+      game.platforms.forEach((platform) => {
+        if (!newPlatformsFav.includes(platform)) {
+          newPlatformsFav.push(platform);
+        }
+      });
+    });
+    dispatch(getPlatformsFav(newPlatformsFav));
+  }, [dispatch,favGames]);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -91,21 +114,43 @@ function App() {
 
   const location = useLocation();
 
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
+
+  useEffect(() => {
+    const userLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    setIsLoggedOut(!userLoggedIn); // Invertir el valor para verificar si el usuario está desconectado
+  }, []);
+
+  const handleLogin = () => {
+    localStorage.setItem("isLoggedIn", "true");
+    setIsLoggedOut(false); // Actualizar el estado a false cuando el inicio de sesión sea exitoso
+  };
+
+  const handleLogout = () => {
+    localStorage.setItem("isLoggedIn", "false");
+    setIsLoggedOut(true); // Actualizar el estado a true al cerrar sesión
+  };
+
   return (
     <div>
+      {isLoggedOut && location.pathname !== "/" && location.pathname !== "/sign" && <Navigate to="/" />}
       {location.pathname === "/" ||
       location.pathname === "/detail/:id" ||
-      location.pathname === "/about" || location.pathname === "/sign"  ? null : (
-        <Nav />
+      location.pathname === "/about" || location.pathname === "/sign" ? null : (
+        <Nav onLogout={handleLogout} />
       )}
       <Routes>
-        <Route path="/" element={<Login />}></Route>
-        <Route path="/home" element={<Cards />}></Route>
-        <Route path="/about" element={<About />}></Route>
-        <Route path="/detail/:id" element={<Detail />}></Route>
-        <Route path="/create" element={<Create />}></Route>
+        <Route path="/" element={<Login handleLogin={handleLogin}/>}></Route>
         <Route path="/sign" element={<SignUp />}></Route>
-        <Route path="/favorites" element={<Favorites />}></Route>
+        {!isLoggedOut && ( // Verificar si el usuario está desconectado
+          <>
+            <Route path="/home" element={<Cards />}></Route>
+            <Route path="/about" element={<About />}></Route>
+            <Route path="/detail/:id" element={<Detail />}></Route>
+            <Route path="/create" element={<Create />}></Route>
+            <Route path="/favorites" element={<Favorites />}></Route>
+          </>
+        )}
       </Routes>
     </div>
   );

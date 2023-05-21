@@ -33,9 +33,89 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(48, 41, 41, 0.1);
+    background-color: rgba(255, 217, 217, 0.1);
     border-radius: 20px;
+   
   }
-  .glass-container{
-    font-size: 20px;
+  .glass-container h2{
+    font-size: 18px;
   }
+  .color-changing-title {
+    background: linear-gradient(90deg, rgba(0,200,174,1) 12%, rgba(238,238,238,1) 39%, rgba(85,173,172,1) 56%, rgba(19,55,145,1) 77%, rgba(0,0,0,1) 98%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: colorChange 5s linear infinite;
+    background-clip: text;
+  position: absolute;
+  top: 0;
+  margin-top: 60px;
+  }
+  
+  @keyframes colorChange {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+  .glass-container a{
+position: absolute;
+top: 0;
+left: 0;
+}
+.desc{
+  font-size: 30px;
+  color: black;
+  margin-right: 5px;
+  position: absolute;
+top: 220px;
+  left: 30px;
+}
+.justify-content{
+  text-align: justify;
+  padding: 30px;
+  letter-spacing: 0.2em;
+  position: absolute;
+  top: 260px;
+  font-size: 13px
+}
+.lista{
+position: absolute;
+left: 0;
+margin-left: 200px;
+margin-top: 350px;
+}
+.liii{
+list-style: none;
+}
+.spanit{
+  font-size: 30px;
+  color: black;
+  position: absolute;
+  left:30px;
+  top:470px;
+}
+.date{
+  position: absolute;
+  left: 730px;
+  bottom: 30px;
+  background: linear-gradient(90deg, rgba(0,200,174,1) 12%, rgba(238,238,238,1) 39%, rgba(85,173,172,1) 56%, rgba(19,55,145,1) 77%, rgba(0,0,0,1) 98%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorChange 5s linear infinite;
+  background-clip: text;
+}
+.genres-span{
+  position: absolute;
+  left: 730px;
+  bottom: 220px;
+
+}
+.genre-title{
+  background-color: aqua;
+border: 1px solid black;
+  border-radius: 10px;
+  color:black;
+  margin: 5px;
+}

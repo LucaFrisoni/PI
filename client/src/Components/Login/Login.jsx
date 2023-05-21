@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
-function Login() {
+function Login({handleLogin}) {
   const URL = "http://localhost:3001/users";
   useEffect(() => {
     // Aplicar estilos al body cuando el componente se monta
@@ -38,7 +38,7 @@ function Login() {
       );
       console.log(userFind);
       if (!userFind) {
-        error.userName = "User dont exist";
+        error.userName = "User doesn't exist";
         return error;
       }
     }
@@ -74,7 +74,10 @@ function Login() {
     setErrors(validationErrors);
     setSubmitted(true)
     if (Object.keys(validationErrors).length === 0) {
+      localStorage.setItem("isLoggedIn", "true");
+      handleLogin(); // Llamar a la función onLogin pasada por props
       navigate("/home");
+    
     }
     setSubmitted(false)
   };
@@ -382,6 +385,7 @@ function Login() {
                   type="submit"
                  value="Login"
                   disabled={Object.keys(errors).length > 0 && submitted}
+              
                 />
               </div>
             </form>

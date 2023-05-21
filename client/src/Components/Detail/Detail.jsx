@@ -1,15 +1,19 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link,useNavigate } from "react-router-dom";
 import { getGameById } from "../../Redux/Actions";
 import { resetId } from "../../Redux/Actions";
 import axios from "axios";
-import "./Detail.css"
+import "./Detail.css";
 
 function Detail() {
   const games = useSelector((state) => state.idGame);
   const { id } = useParams();
   const dispatch = useDispatch();
+
+
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,7 +32,8 @@ function Detail() {
   }, [dispatch, id]);
 
   const handleBack = () => {
-    dispatch(resetId())
+    dispatch(resetId());
+    navigate(-1)
   };
 
   useEffect(() => {
@@ -41,7 +46,7 @@ function Detail() {
       rootElement.style.height = "100vh";
       rootElement.style.overflow = "hidden";
     }
-  
+
     // Cleanup function
     return () => {
       if (rootElement) {
@@ -54,26 +59,52 @@ function Detail() {
       }
     };
   }, [games.image]);
-  
-
 
   return (
     <div className="full">
       <div className="glass-container">
         <Link to="/home">
-          <button onClick={handleBack}>Back</button>
+          <a href="http://localhost:3000/home" onClick={handleBack}>
+            <img
+              width="64"
+              height="64"
+              src="https://img.icons8.com/pastel-glyph/64/000000/circled-left.png"
+              alt="circled-left"
+            />
+          </a>
         </Link>
-        <h1>{games.name}</h1>
-        <h2>
-        {games.description ? games.description.replace(/<\/?p>|<br\s*\/?>/gi, "").replace(/\n/g, "") : 'No description available'}
-        </h2>
-        <h2>Platforms:{games.platforms?.join(", ")}</h2>
-  
-        <h2>{games.released}</h2>
+        <h1 className="color-changing-title">{games.name}</h1>
+        <span className="desc">Descritpion:</span>
+        <textarea 
+        className="justify-content"
+          name=""
+          id=""
+          cols="180"
+          rows="10"
+          value={
+            games.description
+              ? games.description
+                  .replace(/<\/?p>|<br\s*\/?>/gi, "")
+                  .replace(/\n/g, "")
+              : "No description available"
+          }
+        ></textarea>
+
+        <span className="spanit">Play it on:</span>
+        <ul className="lista">
+          {games.platforms &&
+            games.platforms.map((platform, index) => (
+              <li className="liii" key={index}>
+                {platform}
+              </li>
+            ))}
+        </ul>
+
+        <h2 className="date">{games.released}</h2>
         {games.Genders && (
-          <span>
+          <span className="genres-span">
             {games.Genders.map((gender) => (
-              <h2 key={gender.name}>{gender.name}</h2>
+              <h2 className="genre-title" key={gender.name}>{gender.name}</h2>
             ))}
           </span>
         )}

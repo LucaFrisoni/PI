@@ -1,12 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { getGameByName } from "../../Redux/Actions";
 import { useEffect, useState } from "react";
+
 import axios from "axios";
 import "./Nav.css";
 
 //Si llego creo un favorites
-function Nav() {
-  useEffect(()=>{
+function Nav({onLogout}) {
+  useEffect(() => {
     let searchBtn = document.querySelector(".searchBtn");
     let closeBtn = document.querySelector(".closeBtn");
     let searchBox = document.querySelector(".searchBox");
@@ -14,7 +15,6 @@ function Nav() {
       searchBox.classList.add("active");
       closeBtn.classList.add("active");
       searchBtn.classList.add("active");
-  
     };
     closeBtn.onclick = function () {
       searchBox.classList.remove("active");
@@ -23,8 +23,7 @@ function Nav() {
       const input = document.querySelector(".searchBox input");
       input.value = "";
     };
-  },[])
-  
+  }, []);
 
   const dispatch = useDispatch();
   const [gameName, setGameName] = useState("");
@@ -52,7 +51,7 @@ function Nav() {
         .catch((error) => {
           console.error("Error en la búsqueda:", error);
         });
-      dispatch(getGameByName(gameFoundinApp))
+      dispatch(getGameByName(gameFoundinApp));
     } else {
       axios
         .get(`http://localhost:3001/videogames/name?search=${gameName}`)
@@ -69,17 +68,25 @@ function Nav() {
       handleSearch();
     }
   };
-console.log(gameName)
+  console.log(gameName);
   return (
     <header>
       <a href="http://localhost:3000/home" className="logo">
-        VideoGames <img width="30" height="30" src="https://img.icons8.com/emoji/48/000000/video-game-emoji.png" alt="video-game-emoji"/>
+        VideoGames{" "}
+        <img
+          width="30"
+          height="30"
+          src="https://img.icons8.com/emoji/48/000000/video-game-emoji.png"
+          alt="video-game-emoji"
+          className="floating-control"
+        />
       </a>
       <div className="group">
         <ul className="navigation">
           <li>
             <a href="http://localhost:3000/home">Home</a>
           </li>
+
           <li>
             <a href="http://localhost:3000/about">About</a>
           </li>
@@ -87,7 +94,10 @@ console.log(gameName)
             <a href="http://localhost:3000/create">Create</a>
           </li>
           <li>
-            <a href="http://localhost:3000/">Log out</a>
+            <a href="http://localhost:3000/favorites">Favorites</a>
+          </li>
+          <li>
+            <a onClick={onLogout} href="http://localhost:3000/">Log out</a>
           </li>
         </ul>
         <div className="search">
@@ -110,7 +120,12 @@ console.log(gameName)
         </div>
       </div>
       <div className="searchBox">
-        <input type="text" onChange={handleName} onKeyDown={handleKeyPress} placeholder="Search game . . ." />
+        <input
+          type="text"
+          onChange={handleName}
+          onKeyDown={handleKeyPress}
+          placeholder="Search game . . ."
+        />
       </div>
     </header>
   );

@@ -4,6 +4,7 @@ const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 const VideogamesModel = require("./Models/Videogames");
 const GenderModel =require("./Models/Gender")
 const UserModel = require("./Models/Users")
+const FavModel = require ("./Models/Favorites")
 
 //Te conectas a la Db instanciando Sequilize
 const sequelize = new Sequelize(
@@ -18,7 +19,7 @@ const sequelize = new Sequelize(
 VideogamesModel(sequelize);
 GenderModel(sequelize);
 UserModel(sequelize)
-
+FavModel(sequelize)
   //Relaciono los Models => Relacion Muchos a Muchos
 const {Videogames,Genders} = sequelize.models
 Videogames.belongsToMany(Genders,{through:"16horasDeMiVida"})
