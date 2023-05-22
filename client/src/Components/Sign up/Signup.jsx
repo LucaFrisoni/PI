@@ -6,6 +6,108 @@ import axios from "axios";
 import "./Signup.css";
 
 function SignUp() {
+  // ----------------------------------------------------------------States------------------------------------------------------------------------------
+  const URL = "http://localhost:3001/users";
+  
+  const [flag, setFlag] = useState(false);
+  const [user, setUser] = useState({
+    userName: "",
+    email: "",
+    password: "",
+    confirm_password: "",
+  });
+  const [errors, setErrors] = useState({
+    userName: "",
+    email: "",
+    password: "",
+    confirm_password: "",
+  });
+
+  // ----------------------------------------------------------------Validates------------------------------------------------------------------------------
+  async function validate(user) {
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).{8,}$/;
+    const error = {};
+    if (user.userName.length > 30) {
+      error.userName = "User name too long";
+    }
+    if (user.userName) {
+      const { data } = await axios.get(URL);
+      const userFind = data.allUsers.find(
+        (userr) => userr.userName === user.userName
+        );
+        
+        if (userFind) {
+          error.userName = "User name already exists";
+      }
+    }
+    
+    if (!emailRegex.test(user.email)) {
+      error.email = "You must enter a valid email";
+    }
+    if (user.email) {
+      const { data } = await axios.get(URL);
+      const mailFind = data.allUsers.find(
+        (userr) => userr.email === user.email
+        );
+        
+        if (mailFind) {
+          error.email = "Email already exists";
+        }
+      }
+      if (!passwordRegex.test(user.password)) {
+        error.password =
+        "You must enter a password with a capital leter, a number and a special character";
+    }
+    if (user.password !== user.confirm_password) {
+      error.confirm_password = "Passwords are not the same";
+    }
+    return error;
+  }
+  
+  // ----------------------------------------------------------------Handlers------------------------------------------------------------------------------
+  const handleInputs = (event) => {
+    const input_name = event.target.name;
+    const input_value = event.target.value;
+    setUser({
+      ...user,
+      [input_name]: input_value,
+    });
+    if (flag === true) {
+      setFlag(false);
+    }
+  };
+  
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const validationErrors = await validate(user);
+    setErrors(validationErrors);
+    
+    if (Object.keys(validationErrors).length === 0) {
+      if (flag) {
+        setFlag(false); // Cambia flag a false si ya se creó un usuario anteriormente
+      } else {
+        axios
+        .post("http://localhost:3001/users/createuser", {
+          userName: user.userName,
+          email: user.email,
+          password: user.password,
+        })
+        .then(() => {
+          setFlag(true);
+        })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    }
+  };
+  console.log(user.userName);
+  console.log(user.email);
+  console.log(user.password);
+
+  // ----------------------------------------------------------------Style-effect------------------------------------------------------------------------------
   useEffect(() => {
     // Guardar los estilos originales del body
     const originalStyles = {
@@ -33,102 +135,6 @@ function SignUp() {
     };
   }, []);
 
-  const URL = "http://localhost:3001/users";
-
-  async function validate(user) {
-    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).{8,}$/;
-    const error = {};
-    if (user.userName.length > 30) {
-      error.userName = "User name too long";
-    }
-    if (user.userName) {
-      const { data } = await axios.get(URL);
-      const userFind = data.allUsers.find(
-        (userr) => userr.userName === user.userName
-      );
-
-      if (userFind) {
-        error.userName = "User name already exists";
-      }
-    }
-
-    if (!emailRegex.test(user.email)) {
-      error.email = "You must enter a valid email";
-    }
-    if (user.email) {
-      const { data } = await axios.get(URL);
-      const mailFind = data.allUsers.find(
-        (userr) => userr.email === user.email
-      );
-
-      if (mailFind) {
-        error.email = "Email already exists";
-      }
-    }
-    if (!passwordRegex.test(user.password)) {
-      error.password =
-        "You must enter a password with a capital leter, a number and a special character";
-    }
-    if (user.password !== user.confirm_password) {
-      error.confirm_password = "Passwords are not the same";
-    }
-    return error;
-  }
-  const [flag, setFlag] = useState(false);
-  const [user, setUser] = useState({
-    userName: "",
-    email: "",
-    password: "",
-    confirm_password: "",
-  });
-  const [errors, setErrors] = useState({
-    userName: "",
-    email: "",
-    password: "",
-    confirm_password: "",
-  });
-
-  const handleInputs = (event) => {
-    const input_name = event.target.name;
-    const input_value = event.target.value;
-    setUser({
-      ...user,
-      [input_name]: input_value,
-    });
-    if (flag === true) {
-      setFlag(false);
-    }
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const validationErrors = await validate(user);
-    setErrors(validationErrors);
-  
-    if (Object.keys(validationErrors).length === 0) {
-      if (flag) {
-        setFlag(false); // Cambia flag a false si ya se creó un usuario anteriormente
-      } else {
-        axios
-          .post("http://localhost:3001/users/createuser", {
-            userName: user.userName,
-            email: user.email,
-            password: user.password,
-          })
-          .then(() => {
-            setFlag(true);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-    }
-  };
-  console.log(user.userName);
-  console.log(user.email);
-  console.log(user.password);
   return (
     <div className="sign-body">
       <div className="container_sign">
@@ -144,7 +150,7 @@ function SignUp() {
             ></input>
             <img alt="imagen" className="img-sign" src={userrr}></img>
             <span className="sign-span">Username</span>
-            <p>{errors.userName}</p>
+            <p className="erorrp">{errors.userName}</p>
           </div>
           <div className="inputBox">
             <input
@@ -156,7 +162,7 @@ function SignUp() {
             ></input>
             <img alt="imagen" className="img-sign" src={email}></img>
             <span className="sign-span">Email address</span>
-            <p>{errors.email}</p>
+            <p className="erorrp">{errors.email}</p>
           </div>
           <div className="inputBox">
             <input
@@ -168,7 +174,7 @@ function SignUp() {
             ></input>
             <img alt="imagen" className="img-sign" src={padlock}></img>
             <span className="sign-span">Create Password</span>
-            <p>{errors.password}</p>
+            <p className="erorrp">{errors.password}</p>
           </div>
           <div className="inputBox">
             <input
@@ -180,7 +186,7 @@ function SignUp() {
             ></input>
             <img alt="imagen" className="img-sign" src={padlock}></img>
             <span className="sign-span">Confirm Password</span>
-            <p>{errors.confirm_password}</p>
+            <p className="erorrp">{errors.confirm_password}</p>
           </div>
           <div className="inputBox">
             <input type="submit" value="Create Account"></input>

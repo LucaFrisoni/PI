@@ -6,7 +6,7 @@
   margin: 10px;
   background: black;
   overflow: hidden;
-  box-shadow: 0 5px 10px rgb(0, 0, 0,10);
+  box-shadow: 0 5px 60px black;
 }
 .card .poster {
   position: absolute;
@@ -132,6 +132,7 @@
 .infooo{
   position: relative;
   left: 110px;
+
 }
 .star_del{
   position: relative;

@@ -4,19 +4,10 @@ import axios from "axios";
 import "./Login.css";
 function Login({handleLogin}) {
   const URL = "http://localhost:3001/users";
-  useEffect(() => {
-    // Aplicar estilos al body cuando el componente se monta
-
-    document.body.style.background = "black";
-
-    // Restaurar los estilos originales del body cuando el componente se desmonta
-    return () => {
-      document.body.style.background = "";
-    };
-  }, []);
-
+  // ----------------------------------------------------------------Hooks------------------------------------------------------------------------------
   const navigate = useNavigate();
   
+  // ----------------------------------------------------------------States------------------------------------------------------------------------------
   const [submitted, setSubmitted] = useState(false)
 
   const [user, setUser] = useState({
@@ -28,6 +19,8 @@ function Login({handleLogin}) {
     userName: "",
     password: "",
   });
+  // ----------------------------------------------------------------Validates------------------------------------------------------------------------------
+
   async function validate(user) {
     const error = {};
     console.log("si me submitie");
@@ -55,6 +48,20 @@ function Login({handleLogin}) {
 
     return error;
   }
+
+  // ----------------------------------------------------------------Validates------------------------------------------------------------------------------
+
+  useEffect(() => {
+    // Aplicar estilos al body cuando el componente se monta
+    
+    document.body.style.background = "black";
+
+    // Restaurar los estilos originales del body cuando el componente se desmonta
+    return () => {
+      document.body.style.background = "";
+    };
+  }, []);
+  // ----------------------------------------------------------------Handlers------------------------------------------------------------------------------
 
   const handleInputs = (event) => {
     const input_name = event.target.name;

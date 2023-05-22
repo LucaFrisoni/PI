@@ -1,7 +1,7 @@
 import Card from "../Cards/Card";
-import "./Favorites.css"
-import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 import {
   GenderFilter,
   reset,
@@ -10,106 +10,219 @@ import {
   sorceFilter,
   platformFilter,
   dateFilter,
- allFiltsFav
+  allFiltsFav,
 } from "../../Redux/Actions";
-
-
+import "./Favorites.css";
 
 function Favorites() {
-
-
-
-
   // ----------------------------------------------------------------Selectors------------------------------------------------------------------------------
-const games = useSelector((state) => state.allFavs);
-const filters = useSelector((state) => state.filterFavs);
-const allGenres = useSelector((state) => state.allGenders);
-const allPlatforms = useSelector((state) => state.allPlatformsFav);
-const allDates = useSelector((state) => state.allDatesFav);
-const allfilters = useSelector((state) => state.filtersFav);
-console.log(games)
-// ----------------------------------------------------------------Paging------------------------------------------------------------------------------
-const [pages, setPages] = useState(1);
-const itemsPerPage = 15;
-const startIndex = (pages - 1) * itemsPerPage;
-const endIndex = startIndex + itemsPerPage;
+  const games = useSelector((state) => state.allFavs);
+  const filters = useSelector((state) => state.filterFavs);
+  const allGenres = useSelector((state) => state.allGenders);
+  const allPlatforms = useSelector((state) => state.allPlatformsFav);
+  const allDates = useSelector((state) => state.allDatesFav);
+  const allfilters = useSelector((state) => state.filtersFav);
+  const mode = useSelector((state) => state.mode);
+  console.log(games);
+  console.log(mode)
+  // ----------------------------------------------------------------Hooks------------------------------------------------------------------------------
+  const dispatch = useDispatch();
+  const location = useLocation();
 
-// ----------------------------------------------------------------Handlers------------------------------------------------------------------------------
+  // ----------------------------------------------------------------Paging------------------------------------------------------------------------------
+  const [pages, setPages] = useState(1);
+  const itemsPerPage = 15;
+  const startIndex = (pages - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
 
-const dispatch = useDispatch();
+  // ----------------------------------------------------------------Handlers------------------------------------------------------------------------------
 
-const handleNext = () => {
-  setPages(pages + 1);
-  const topElement = document.querySelector("#topElement");
-  topElement.scrollIntoView({ behavior: "auto" });
-};
-
-const handlePrev = () => {
-  setPages(pages - 1);
-  const topElement = document.querySelector("#topElement");
-  topElement.scrollIntoView({ behavior: "auto" });
-};
-
-const handleReset = () => {
-  dispatch(reset());
-  setPages(1);
-  document.getElementById("Genders").selectedIndex = 0;
-  document.getElementById("Ratings").selectedIndex = 0;
-  document.getElementById("Order").selectedIndex = 0;
-  document.getElementById("Source").selectedIndex = 0;
-  document.getElementById("Platforms").selectedIndex = 0;
-  document.getElementById("Date").selectedIndex = 0;
-  const topElement = document.querySelector("#topElement");
-  topElement.scrollIntoView({ behavior: "smooth" });
-};
-const handleGenresOptions = (event) => {
-  dispatch(GenderFilter(event.target.value));
-  setPages(1);
-};
-
-const handleRatingOptions = (event) => {
-  dispatch(ratingFilter(event.target.value));
-  setPages(1);
-};
-
-const handleOrderOptions = (event) => {
-  dispatch(orderFilter(event.target.value));
-  setPages(1);
-};
-
-const handleSourceOptions = (event) => {
-  dispatch(sorceFilter(event.target.value));
-  setPages(1);
-};
-
-const handlePlatforms = (event) => {
-  dispatch(platformFilter(event.target.value));
-  setPages(1);
-};
-
-const handleDateOptions = (event) => {
-  dispatch(dateFilter(event.target.value));
-  setPages(1);
-};
-
-useEffect(() => {
-  dispatch(allFiltsFav(allfilters));
-}, [allfilters, dispatch]);
-
-useEffect(() => {
-  const originalBackground = document.body.style.backgroundImage;
-  const newBackground =
-    "url(https://i.pinimg.com/originals/4c/ba/51/4cba51207cfecb2db9e21b8cdc5ca019.png)";
-
-  document.body.style.backgroundImage = newBackground;
-
-  return () => {
-    document.body.style.backgroundImage = originalBackground;
+  const handleNext = () => {
+    setPages(pages + 1);
+    const topElement = document.querySelector("#topElement");
+    topElement.scrollIntoView({ behavior: "auto" });
   };
-}, []);
+
+  const handlePrev = () => {
+    setPages(pages - 1);
+    const topElement = document.querySelector("#topElement");
+    topElement.scrollIntoView({ behavior: "auto" });
+  };
+
+  const handleReset = () => {
+    dispatch(reset());
+    setPages(1);
+    document.getElementById("Genders").selectedIndex = 0;
+    document.getElementById("Ratings").selectedIndex = 0;
+    document.getElementById("Order").selectedIndex = 0;
+    document.getElementById("Source").selectedIndex = 0;
+    document.getElementById("Platforms").selectedIndex = 0;
+    document.getElementById("Date").selectedIndex = 0;
+    const topElement = document.querySelector("#topElement");
+    topElement.scrollIntoView({ behavior: "smooth" });
+  };
+  const handleGenresOptions = (event) => {
+    dispatch(GenderFilter(event.target.value));
+    setPages(1);
+  };
+
+  const handleRatingOptions = (event) => {
+    dispatch(ratingFilter(event.target.value));
+    setPages(1);
+  };
+
+  const handleOrderOptions = (event) => {
+    dispatch(orderFilter(event.target.value));
+    setPages(1);
+  };
+
+  const handleSourceOptions = (event) => {
+    dispatch(sorceFilter(event.target.value));
+    setPages(1);
+  };
+
+  const handlePlatforms = (event) => {
+    dispatch(platformFilter(event.target.value));
+    setPages(1);
+  };
+
+  const handleDateOptions = (event) => {
+    dispatch(dateFilter(event.target.value));
+    setPages(1);
+  };
+
+  useEffect(() => {
+    dispatch(allFiltsFav(allfilters));
+  }, [allfilters, dispatch]);
+
+  // ----------------------------------------------------------------UseEffect-DarkMode-----------------------------------------------------------------------------
+  useEffect(() => {
+    let background_cards = document.querySelectorAll(".details");
+    let card_h2 = document.querySelectorAll(".details h2");
+    let card_span = document.querySelectorAll(".details h2 span");
+    let rating_span = document.querySelectorAll(".rating span");
+    let tags = document.querySelectorAll(".tags span");
+    let infooo = document.querySelectorAll(".infooo");
+    let toggelChecked = document.getElementById("darkmode-toohle");
+    let checked = toggelChecked.checked;
+    let header = document.querySelector("header");
+    let logo = document.querySelector(".logo");
+    let navLinks = document.querySelectorAll("header ul li a");
+    let searchBox = document.querySelector(".searchBox");
+    let input = document.querySelector(".searchBox input");
+    let selects = document.querySelector(".container-selects");
+
+    if (mode) {
+      toggelChecked.checked = true;
+
+      background_cards.forEach((card) => {
+        card.classList.add("color-cards");
+      });
+      card_h2.forEach((element) => {
+        element.classList.add("color-cards-title");
+        element.style.color = "white";
+        element.style.margin = "0";
+        element.style.padding = "0";
+        element.style.fontSize = "20px";
+        element.style.fontWeight = "700";
+      });
+      card_span.forEach((element) => {
+        element.classList.add("color-cards-span");
+        element.style.color = "white";
+        element.style.fontSize = "14px";
+      });
+      rating_span.forEach((element) => {
+        element.classList.add("color-cards-rating");
+        element.style.color = "white";
+      });
+      tags.forEach((element) => {
+        element.classList.add("color-cards-tags");
+        element.style.color = "white";
+        element.style.border = "1px solid white";
+      });
+      infooo.forEach((element) => {
+        element.style.backgroundColor = "white";
+        element.style.borderRadius = "13px";
+      });
+      header.style.backgroundColor = "#0e1215";
+      logo.style.color = "white";
+      navLinks.forEach((link) => {
+        link.style.color = "#eee";
+      });
+      searchBox.style.backgroundColor = "#0e1215";
+      input.style.backgroundColor = "#0e1215";
+      input.style.color = "white";
+      input.style.borderBottom = "1px solid white";
+      if (location.pathname == "/favorites") {
+        selects.style.backgroundColor = "#0e1215";
+        selects.style.border = "1px solid #0e1215";
+      }
+    } else {
+      toggelChecked.checked = false;
+      // Restablecer estilos originales de las cards
+      background_cards.forEach((card) => {
+        card.classList.remove("color-cards");
+      });
+      card_h2.forEach((element) => {
+        element.classList.remove("color-cards-title");
+        element.style.color = "black";
+        element.style.margin = "";
+        element.style.padding = "";
+        element.style.fontSize = "";
+        element.style.fontWeight = "";
+      });
+      card_span.forEach((element) => {
+        element.classList.remove("color-cards-span");
+        element.style.color = "black";
+        element.style.fontSize = "14px";
+      });
+      rating_span.forEach((element) => {
+        element.classList.remove("color-cards-rating");
+        element.style.color = "black";
+      });
+      tags.forEach((element) => {
+        element.classList.remove("color-cards-tags");
+        element.style.color = "black";
+        element.style.border = "";
+      });
+      infooo.forEach((element) => {
+        element.style.backgroundColor = "";
+        element.style.borderRadius = "";
+      });
+
+      // Restablecer estilos originales de la barra de navegación
+      header.style.backgroundColor = "white";
+      logo.style.color = "#333";
+      navLinks.forEach((link) => {
+        link.style.color = "rgba(0, 0, 0, 0.7)";
+      });
+      searchBox.style.backgroundColor = "white";
+      input.style.backgroundColor = "white";
+      input.style.color = "#333";
+      input.style.borderBottom = "1px solid rgba(0, 0, 0, 0.5)";
+      if (location.pathname === "/favorites") {
+        selects.style.backgroundColor = "white";
+        selects.style.border = "1px solid white";
+      }
+    }
+  }, [mode]);
+
+  useEffect(() => {
+    const originalBackground = document.body.style.backgroundImage;
+    const newBackground =
+      "url(https://i.pinimg.com/originals/4c/ba/51/4cba51207cfecb2db9e21b8cdc5ca019.png)";
+
+    document.body.style.backgroundImage = newBackground;
+
+    return () => {
+      document.body.style.backgroundImage = originalBackground;
+    };
+  }, []);
   return (
     <div>
-      <a href="http://localhost:3000/home" id="topElement">a</a>
+      <a href="http://localhost:3000/home" id="topElement">
+        a
+      </a>
       <div className="container-selects">
         <select id="Genders" defaultValue="" onChange={handleGenresOptions}>
           <option value="" disabled hidden>
@@ -165,12 +278,14 @@ useEffect(() => {
             </option>
           ))}
         </select>
-        <button className="reset-buton" onClick={handleReset}>Reset</button>
+        <button className="reset-buton" onClick={handleReset}>
+          Reset
+        </button>
       </div>
 
       <div className="container">
-        { filters && filters.slice(startIndex, endIndex)
-          .map((e) => {
+        {filters &&
+          filters.slice(startIndex, endIndex).map((e) => {
             return (
               <Card
                 key={e.id}
@@ -187,11 +302,23 @@ useEffect(() => {
       </div>
       <div className="button-container">
         <button onClick={handlePrev} disabled={pages === 1}>
-        <img width="50" height="50" src="https://img.icons8.com/plasticine/50/000000/left-squared.png" alt="left-squared"/>
+          <img
+            width="50"
+            height="50"
+            src="https://img.icons8.com/plasticine/50/000000/left-squared.png"
+            alt="left-squared"
+          />
         </button>
-        <button><div>{pages}</div></button>
+        <button>
+          <div>{pages}</div>
+        </button>
         <button onClick={handleNext} disabled={endIndex >= filters.length}>
-        <img width="50" height="50" src="https://img.icons8.com/plasticine/50/000000/right-squared.png" alt="right-squared"/>
+          <img
+            width="50"
+            height="50"
+            src="https://img.icons8.com/plasticine/50/000000/right-squared.png"
+            alt="right-squared"
+          />
         </button>
       </div>
     </div>

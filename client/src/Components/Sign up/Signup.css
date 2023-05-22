@@ -108,3 +108,11 @@ font-weight: 300;
     font-weight: 500;
     color: white;
 }
+.container_sign .form .erorrp{
+  color:red;
+  padding: 5px;
+}
+#userCreatedMessage{
+  font-size: 16px;
+  color: green;
+}

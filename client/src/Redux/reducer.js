@@ -17,7 +17,8 @@ import {
   ALL_FAV,
   APPLY_FILTERS_FAV,
   ALL_DATES_FAV,
-  ALL_PLATFORMS_FAV
+  ALL_PLATFORMS_FAV,
+  DARK_MODE,
 } from "./Actions";
 
 const initialState = {
@@ -47,6 +48,7 @@ const initialState = {
     platform: "",
     date: "",
   },
+  mode: false,
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -348,7 +350,7 @@ const reducer = (state = initialState, { type, payload }) => {
           }
         }
         if (payload.rating === "five") {
-          filtersssGames = filtersssGames.filter((game) => game.rating === 5);
+          filtersssGames = filtersssGames.filter((game) => game.rating >= 4.99);
           if (filtersssGames.length === 0) {
             alert("There are no favs with such filters");
             return state;
@@ -413,13 +415,18 @@ const reducer = (state = initialState, { type, payload }) => {
         if (filtersssGames.length < state.allFavs.length)
           payload.order === "Ascendent"
             ? filtersssGames.sort((a, b) => a.name.localeCompare(b.name))
-            : filtersssGames.sort((a, b) => b.name.localeCompare(a.name));}
-      
+            : filtersssGames.sort((a, b) => b.name.localeCompare(a.name));
+      }
 
       return {
         ...state,
         filterFavs: filtersssGames,
       };
+      case DARK_MODE:
+        return{
+          ...state,
+          mode:payload
+        }
 
     default:
       return state;

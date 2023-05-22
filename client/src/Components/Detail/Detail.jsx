@@ -7,14 +7,15 @@ import axios from "axios";
 import "./Detail.css";
 
 function Detail() {
+  // ----------------------------------------------------------------Selectors------------------------------------------------------------------------------
   const games = useSelector((state) => state.idGame);
+  
+  // ----------------------------------------------------------------Hooks------------------------------------------------------------------------------
   const { id } = useParams();
-  const dispatch = useDispatch();
-
-
   const navigate = useNavigate();
-
-
+  const dispatch = useDispatch();
+  // ----------------------------------------------------------------Effects------------------------------------------------------------------------------
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,11 +32,6 @@ function Detail() {
     fetchData();
   }, [dispatch, id]);
 
-  const handleBack = () => {
-    dispatch(resetId());
-    navigate(-1)
-  };
-
   useEffect(() => {
     const rootElement = document.getElementById("root");
     if (rootElement && games.image) {
@@ -46,7 +42,6 @@ function Detail() {
       rootElement.style.height = "100vh";
       rootElement.style.overflow = "hidden";
     }
-
     // Cleanup function
     return () => {
       if (rootElement) {
@@ -59,7 +54,12 @@ function Detail() {
       }
     };
   }, [games.image]);
-
+  // ----------------------------------------------------------------Handler------------------------------------------------------------------------------
+  
+  const handleBack = () => {
+    dispatch(resetId());
+    navigate(-1)
+  };
   return (
     <div className="full">
       <div className="glass-container">
