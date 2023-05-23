@@ -147,3 +147,6 @@ section .signin .content .form .inputBx i {
     height: calc(20vw - 2px);
   }
 }
+.error-login{
+  color: red;
+}

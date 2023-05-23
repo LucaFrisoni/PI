@@ -14,6 +14,7 @@ import Favorites from "./Components/Favorites/Favorites";
 import Create from "./Components/Create/Create";
 import Nav from "./Components/Nav/Nav";
 import SignUp from "./Components/Sign up/Signup";
+import Forgot from "./Components/ForgotPassword/ForgotPassword";
 
 // hacer peticion al back de todos los personajes y mandarselo a Cards
 
@@ -133,15 +134,16 @@ function App() {
 
   return (
     <div>
-      {isLoggedOut && location.pathname !== "/" && location.pathname !== "/sign" && <Navigate to="/" />}
+      {isLoggedOut && location.pathname !== "/" && location.pathname !== "/sign" && location.pathname !== "/forgotpassword" && <Navigate to="/" />}
       {location.pathname === "/" ||
       location.pathname === "/detail/:id" ||
-      location.pathname === "/about" || location.pathname === "/sign" ? null : (
+      location.pathname === "/about" || location.pathname === "/sign" || location.pathname === "/forgotpassword" ? null : (
         <Nav onLogout={handleLogout} />
       )}
       <Routes>
         <Route path="/" element={<Login handleLogin={handleLogin}/>}></Route>
         <Route path="/sign" element={<SignUp />}></Route>
+        <Route path="/forgotpassword" element={<Forgot />}></Route>
         {!isLoggedOut && ( // Verificar si el usuario está desconectado
           <>
             <Route path="/home" element={<Cards />}></Route>
@@ -149,6 +151,7 @@ function App() {
             <Route path="/detail/:id" element={<Detail />}></Route>
             <Route path="/create" element={<Create />}></Route>
             <Route path="/favorites" element={<Favorites />}></Route>
+        
           </>
         )}
       </Routes>

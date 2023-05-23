@@ -367,7 +367,7 @@ function Login({handleLogin}) {
                   required
                 ></input>
                 <i>Username</i>
-                <p>{errors.userName}</p>
+                <p className="error-login">{errors.userName}</p>
               </div>
               <div className="inputBx">
                 <input
@@ -378,10 +378,10 @@ function Login({handleLogin}) {
                   required
                 ></input>
                 <i>Password</i>
-                <p>{errors.password}</p>
+                <p className="error-login">{errors.password}</p>
               </div>
               <div className="links">
-                <a className="signin_btn" href="http://localhost:3000/sign">
+                <a className="signin_btn" href="http://localhost:3000/forgotpassword">
                   Forgot Password
                 </a>
 

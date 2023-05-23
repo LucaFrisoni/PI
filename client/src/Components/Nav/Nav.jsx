@@ -10,7 +10,7 @@ import "./Nav.css";
 function Nav({ onLogout }) {
   // ----------------------------------------------------------------Selectors------------------------------------------------------------------------------
   const games = useSelector((state) => state.allVideoGames);
-  
+  const checkk = useSelector((state)=>state.mode)
   // ----------------------------------------------------------------States------------------------------------------------------------------------------
   const [darkMode, setDarkModee] = useState(false);
   const [gameName, setGameName] = useState("");
@@ -39,6 +39,7 @@ function Nav({ onLogout }) {
     };
   }, []);
 
+  
   const handleMode = () => {
     let background_cards = document.querySelectorAll(".details");
     let card_h2 = document.querySelectorAll(".details h2");
@@ -208,6 +209,7 @@ function Nav({ onLogout }) {
           id="darkmode-toohle"
           className="darkmode-toohle"
           onClick={handleMode}
+          checked={darkMode}
         />
         <label className="label-dark" for="darkmode-toohle"></label>
       </div>

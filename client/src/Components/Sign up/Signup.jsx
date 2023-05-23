@@ -78,11 +78,12 @@ function SignUp() {
       setFlag(false);
     }
   };
-  
+  console.log(errors)
   const handleSubmit = async (event) => {
     event.preventDefault();
     const validationErrors = await validate(user);
     setErrors(validationErrors);
+   
     
     if (Object.keys(validationErrors).length === 0) {
       if (flag) {
