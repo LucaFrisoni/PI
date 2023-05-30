@@ -2,13 +2,14 @@ import padlock from "../../Assets/icons8-candado-30.png";
 import email from "../../Assets/icons8-nuevo-post-30.png";
 import userrr from "../../Assets/icons8-usuario-30.png";
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import "./Signup.css";
 
 function SignUp() {
   // ----------------------------------------------------------------States------------------------------------------------------------------------------
   const URL = "http://localhost:3001/users";
-  
+
   const [flag, setFlag] = useState(false);
   const [user, setUser] = useState({
     userName: "",
@@ -27,7 +28,7 @@ function SignUp() {
   async function validate(user) {
     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).{8,}$/;
     const error = {};
     if (user.userName.length > 30) {
       error.userName = "User name too long";
@@ -36,13 +37,13 @@ function SignUp() {
       const { data } = await axios.get(URL);
       const userFind = data.allUsers.find(
         (userr) => userr.userName === user.userName
-        );
-        
-        if (userFind) {
-          error.userName = "User name already exists";
+      );
+
+      if (userFind) {
+        error.userName = "User name already exists";
       }
     }
-    
+
     if (!emailRegex.test(user.email)) {
       error.email = "You must enter a valid email";
     }
@@ -50,14 +51,14 @@ function SignUp() {
       const { data } = await axios.get(URL);
       const mailFind = data.allUsers.find(
         (userr) => userr.email === user.email
-        );
-        
-        if (mailFind) {
-          error.email = "Email already exists";
-        }
+      );
+
+      if (mailFind) {
+        error.email = "Email already exists";
       }
-      if (!passwordRegex.test(user.password)) {
-        error.password =
+    }
+    if (!passwordRegex.test(user.password)) {
+      error.password =
         "You must enter a password with a capital leter, a number and a special character";
     }
     if (user.password !== user.confirm_password) {
@@ -65,9 +66,9 @@ function SignUp() {
     }
     return error;
   }
-  
+
   // ----------------------------------------------------------------Handlers------------------------------------------------------------------------------
-  const handleInputs = (event) => {
+  const handleInputs = async (event) => {
     const input_name = event.target.name;
     const input_value = event.target.value;
     setUser({
@@ -78,29 +79,28 @@ function SignUp() {
       setFlag(false);
     }
   };
-  console.log(errors)
+  console.log(errors);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const validationErrors = await validate(user);
     setErrors(validationErrors);
-   
-    
+
     if (Object.keys(validationErrors).length === 0) {
       if (flag) {
         setFlag(false); // Cambia flag a false si ya se creó un usuario anteriormente
       } else {
-        axios
-        .post("http://localhost:3001/users/createuser", {
-          userName: user.userName,
-          email: user.email,
-          password: user.password,
-        })
-        .then(() => {
-          setFlag(true);
-        })
-          .catch((error) => {
-            console.log(error);
-          });
+        const uuid = uuidv4();
+         await axios.post(
+          "http://localhost:3001/users/verify_email",
+          {
+            email: user.email,
+            uuid,
+            userName: user.userName,
+            password: user.password,
+          }
+        );
+
+        setFlag(true);
       }
     }
   };
@@ -192,7 +192,7 @@ function SignUp() {
           <div className="inputBox">
             <input type="submit" value="Create Account"></input>
           </div>
-          <p id="userCreatedMessage">{flag ? "User created!" : null}</p>
+          <p id="userCreatedMessage">{flag ? "Verify your email" : null}</p>
           <p>
             Already a member ?{" "}
             <a href="http://localhost:3000/" className="login">

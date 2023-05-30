@@ -15,6 +15,7 @@ import Create from "./Components/Create/Create";
 import Nav from "./Components/Nav/Nav";
 import SignUp from "./Components/Sign up/Signup";
 import Forgot from "./Components/ForgotPassword/ForgotPassword";
+import Verification from "./Components/Verifaction/Verification";
 
 // hacer peticion al back de todos los personajes y mandarselo a Cards
 
@@ -137,13 +138,14 @@ function App() {
       {isLoggedOut && location.pathname !== "/" && location.pathname !== "/sign" && location.pathname !== "/forgotpassword" && <Navigate to="/" />}
       {location.pathname === "/" ||
       location.pathname === "/detail/:id" ||
-      location.pathname === "/about" || location.pathname === "/sign" || location.pathname === "/forgotpassword" ? null : (
+      location.pathname === "/about" || location.pathname === "/sign" || location.pathname === "/forgotpassword" || location.pathname.includes("/verify-email/")? null : (
         <Nav onLogout={handleLogout} />
       )}
       <Routes>
         <Route path="/" element={<Login handleLogin={handleLogin}/>}></Route>
         <Route path="/sign" element={<SignUp />}></Route>
         <Route path="/forgotpassword" element={<Forgot />}></Route>
+        <Route path="/verify-email/:uuid/:email" element={<Verification />}></Route>
         {!isLoggedOut && ( // Verificar si el usuario está desconectado
           <>
             <Route path="/home" element={<Cards />}></Route>

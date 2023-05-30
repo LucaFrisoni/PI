@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   GenderFilter,
   reset,
@@ -29,11 +29,11 @@ function Cards() {
   console.log(allPlatforms);
   console.log(games);
   console.log(favoritesGames);
-console.log(mode)
+  console.log(mode);
   // ----------------------------------------------------------------Hooks------------------------------------------------------------------------------
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
   // ----------------------------------------------------------------Paging------------------------------------------------------------------------------
   const [pages, setPages] = useState(1);
   const itemsPerPage = 15;
@@ -343,25 +343,28 @@ console.log(mode)
           })}
       </div>
       <div className="button-container">
-        <button onClick={handlePrev} disabled={pages === 1}>
-          <img
-            width="50"
-            height="50"
-            src="https://img.icons8.com/plasticine/50/000000/left-squared.png"
-            alt="left-squared"
-          />
-        </button>
-        <button>
-          <div>{pages}</div>
-        </button>
-        <button onClick={handleNext} disabled={endIndex >= filters.length}>
-          <img
-            width="50"
-            height="50"
-            src="https://img.icons8.com/plasticine/50/000000/right-squared.png"
-            alt="right-squared"
-          />
-        </button>
+        {pages === 1 ? null : (
+          <button onClick={handlePrev}>
+            <img
+              width="50"
+              height="50"
+              src="https://img.icons8.com/plasticine/50/000000/left-squared.png"
+              alt="left-squared"
+            />
+          </button>
+        )}
+
+        <button>{pages ===1 && filters.length <15 ? null : <div>{pages}</div>}</button>
+        {endIndex >= filters.length ? null : (
+          <button onClick={handleNext}>
+            <img
+              width="50"
+              height="50"
+              src="https://img.icons8.com/plasticine/50/000000/right-squared.png"
+              alt="right-squared"
+            />
+          </button>
+        )}
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ import "./Nav.css";
 function Nav({ onLogout }) {
   // ----------------------------------------------------------------Selectors------------------------------------------------------------------------------
   const games = useSelector((state) => state.allVideoGames);
-  const checkk = useSelector((state)=>state.mode)
+ 
   // ----------------------------------------------------------------States------------------------------------------------------------------------------
   const [darkMode, setDarkModee] = useState(false);
   const [gameName, setGameName] = useState("");
@@ -95,7 +95,7 @@ function Nav({ onLogout }) {
       input.style.backgroundColor = "#0e1215";
       input.style.color = "white";
       input.style.borderBottom = "1px solid white";
-      if (location.pathname == "/home") {
+      if (location.pathname === "/home") {
         selects.style.backgroundColor = "#0e1215";
         selects.style.border = "1px solid #0e1215";
       }
