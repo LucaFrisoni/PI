@@ -354,7 +354,9 @@ function Cards() {
           </button>
         )}
 
-        <button>{pages ===1 && filters.length <15 ? null : <div>{pages}</div>}</button>
+        <button>
+          {pages === 1 && filters.length < 15 ? null : <div>{pages}</div>}
+        </button>
         {endIndex >= filters.length ? null : (
           <button onClick={handleNext}>
             <img
